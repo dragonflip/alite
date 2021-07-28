@@ -109,44 +109,41 @@ class _Pay extends State<Pay> {
                     ),
                     Row(
                       children: [
-                        ChoiceChip(
-                          onSelected: (value) {
+                        ActionChip(
+                          onPressed: () {
                             setState(() {
                               _amount = "${(290 - 123.50).toStringAsFixed(2)}";
                             });
                           },
                           label: Text("${(290 - 123.50).toStringAsFixed(2)}"),
-                          selected: false,
+                          tooltip: "Рекомендована сума поповнення",
                         ),
                         SizedBox(width: 8),
-                        ChoiceChip(
-                            onSelected: (value) {
-                              setState(() {
-                                _amount = "100";
-                              });
-                            },
-                            label: Text("100"),
-                            selected: false
+                        ActionChip(
+                          onPressed: () {
+                            setState(() {
+                              _amount = "100";
+                            });
+                          },
+                          label: Text("100"),
                         ),
                         SizedBox(width: 8),
-                        ChoiceChip(
-                            onSelected: (value) {
-                              setState(() {
-                                _amount = "300";
-                              });
-                            },
-                            label: Text("300"),
-                            selected: false
+                        ActionChip(
+                          onPressed: () {
+                            setState(() {
+                              _amount = "300";
+                            });
+                          },
+                          label: Text("300"),
                         ),
                         SizedBox(width: 8),
-                        ChoiceChip(
-                            onSelected: (value) {
-                              setState(() {
-                                _amount = "1000";
-                              });
-                            },
-                            label: Text("1000"),
-                            selected: false
+                        ActionChip(
+                          onPressed: () {
+                            setState(() {
+                              _amount = "1000";
+                            });
+                          },
+                          label: Text("1000"),
                         ),
                       ],
                     ),
@@ -155,7 +152,13 @@ class _Pay extends State<Pay> {
                     Text("Оплатити за допомогою:", style: TextStyle(fontSize: 22)),
                     SizedBox(height: 8),
                     ElevatedButton(
-                      onPressed: null,
+                      onPressed: () {
+                        if (_amount != "0") {
+                          launch("https://next.privat24.ua/money-transfer/card");
+                        } else {
+                          _focusNode.requestFocus();
+                        }
+                      },
                       child: ListTile(
                         title: Text("Privat24"),
                         subtitle: Text("Сума до сплати"),
@@ -215,7 +218,13 @@ class _Pay extends State<Pay> {
                     ),
                     SizedBox(height: 8),
                     ElevatedButton(
-                      onPressed: null,
+                      onPressed: () {
+                        if (_amount != "0") {
+                          launch("https://easypay.ua/ua/moneytransfer");
+                        } else {
+                          _focusNode.requestFocus();
+                        }
+                      },
                       child: ListTile(
                         title: Text("EasyPay"),
                         subtitle: Text("Сума до сплати"),

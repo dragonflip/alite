@@ -1,8 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -22,38 +24,56 @@ class _Login extends State<Login> {
     });
 
     try {
-      var url = Uri.parse('https://$_url:$_port/api.cgi/users/login');
-      var response = await http.post(
+      // Check internet connection
+      await http.get(Uri.parse('https://cloudflare.com')).timeout(Duration(seconds: 2));
+
+      try {
+        var url = Uri.parse('https://$_url:$_port/api.cgi/users/login');
+        var response = await http.post(
           url,
           body: jsonEncode({'login': _login, 'password': _password}),
           headers: {"Content-Type" : "application/json"}
-      ).timeout(Duration(seconds: 10));
+        ).timeout(Duration(seconds: 10));
 
-      print(_login);
-      print(_password);
-      print(response.body);
+        print(_login);
+        print(_password);
+        print(response.body);
 
-      if (jsonDecode(response.body)['uid'] != 0) {
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setString("sid", jsonDecode(response.body)['sid'].toString());
-        prefs.setString("uid", jsonDecode(response.body)['uid'].toString());
+        if (jsonDecode(response.body)['uid'] != 0) {
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString("sid", jsonDecode(response.body)['sid'].toString());
+          prefs.setString("uid", jsonDecode(response.body)['uid'].toString());
 
-        prefs.setString("login", _login);
-        prefs.setString("password", _password);
-        prefs.setString("url", _url);
-        prefs.setString("port", _port);
+          prefs.setString("login", _login);
+          prefs.setString("password", _password);
+          prefs.setString("url", _url);
+          prefs.setString("port", _port);
 
-        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+        } else {
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: Text('Помилка'),
+              content: Text('Невірний логін або пароль'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("ОК"),
+                ),
+              ],
+            ),
+          );
+        }
+      } on SocketException catch (e) {
+        print(_url);
+        print(e);
 
-        setState(() {
-          _buttonDisabled = false;
-        });
-      } else {
         showDialog(
           context: context,
           builder: (_) => AlertDialog(
             title: Text('Помилка'),
-            content: Text('Невірний логін або пароль'),
+            content: Text('Невірний URL'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -62,23 +82,32 @@ class _Login extends State<Login> {
             ],
           ),
         );
+      } catch (e) {
+        print(_port);
+        print(e);
 
-        setState(() {
-          _buttonDisabled = false;
-        });
-
-        HapticFeedback.mediumImpact();
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('Помилка'),
+            content: Text('Невірний порт'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("ОК"),
+              ),
+            ],
+          ),
+        );
       }
     } catch (e) {
-      print(_url);
-      print(_port);
       print(e);
 
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
           title: Text('Помилка'),
-          content: Text('Невірний URL або порт'),
+          content: Text('Перевірте підключення до інтернету'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -87,13 +116,13 @@ class _Login extends State<Login> {
           ],
         ),
       );
-
-      setState(() {
-        _buttonDisabled = false;
-      });
-
-      HapticFeedback.mediumImpact();
     }
+
+    setState(() {
+      _buttonDisabled = false;
+    });
+
+    HapticFeedback.mediumImpact();
   }
 
   getData() async {

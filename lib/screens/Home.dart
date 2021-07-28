@@ -120,11 +120,6 @@ class _Home extends State<Home> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text("Тариф «Домашній+»", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                          // IconButton(
-                          //   onPressed: () {},
-                          //   icon: Icon(Icons.swap_horizontal_circle, color: Colors.green),
-                          //   tooltip: "Змінити тариф",
-                          // ),
                         ],
                       ),
                       SizedBox(height: 8),
