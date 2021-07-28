@@ -24,7 +24,25 @@ class Profile extends StatelessWidget {
                       //   label: Text("Редагувати профіль"),
                       // ),
                       OutlinedButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: Text('Заморозити аккаунт?'),
+                              content: Text('Замороження аккаунта призупиняє послуги та їх щомісячну оплату.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text("ЗАМОРОЗИТИ"),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                         icon: Icon(Icons.block),
                         label: Text("Заморозити аккаунт"),
                       ),

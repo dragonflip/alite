@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
 
-const VERSION = "Версія 0.1.10";
-
 class More extends StatelessWidget {
+  var version;
+
+  Future _getAppInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    version = packageInfo.version;
+
+    return version;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,8 +54,8 @@ class More extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (_) => AlertDialog(
-                        title: Text('Вийти?'),
-                        content: Text('Ви дійсно хочете вийти з особистого кабінету? \n\nПісля цього потрібно знову вказувати дані для входу.'),
+                        title: Text('Вийти з кабінету?'),
+                        content: Text('Після виходу з особистого кабінету потрібно знову вказувати дані для входу.'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
@@ -77,10 +85,19 @@ class More extends StatelessWidget {
                 Divider(),
                 ListTile(
                   onLongPress: () {
-                    Clipboard.setData(ClipboardData(text: VERSION));
+                    Clipboard.setData(ClipboardData(text: "ABillS Alite, версія $version"));
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Інформацію про версію скопійовано")));
                   },
-                  title: Text(VERSION),
+                  title: FutureBuilder(
+                    future: _getAppInfo(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text("Версія ${snapshot.data.toString()}");
+                      } else {
+                        return Text("Версія");
+                      }
+                    }
+                  ),
                   leading: Icon(Icons.code),
                 ),
               ],

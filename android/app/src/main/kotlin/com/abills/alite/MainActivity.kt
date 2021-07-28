@@ -1,4 +1,4 @@
-package com.abills.alite.alite
+package com.abills.alite
 
 import io.flutter.embedding.android.FlutterActivity
 

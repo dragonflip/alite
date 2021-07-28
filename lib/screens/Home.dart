@@ -66,7 +66,7 @@ class _Home extends State<Home> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, "profile");
+                              Navigator.pushNamed(context, "/profile");
                             },
                             child: Text("Мій профіль"),
                           ),
