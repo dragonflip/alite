@@ -89,7 +89,8 @@ class _Pay extends State<Pay> {
                         });
                       },
 
-                      initialValue: "${(290 - 123.50).toStringAsFixed(2)}",
+                      initialValue: "$_amount",
+                      key: Key("amount_$_amount"),
 
                       keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
                       inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$'))],
@@ -99,13 +100,55 @@ class _Pay extends State<Pay> {
                         labelText: "Сума",
                         border: OutlineInputBorder(),
                         counterText: "",
-                        // helperText: "Рекомендована сума поповнення: ${(290 - 123.50).toStringAsFixed(2)} грн"
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Введіть суму поповнення";
                         }
                       },
+                    ),
+                    Row(
+                      children: [
+                        ChoiceChip(
+                          onSelected: (value) {
+                            setState(() {
+                              _amount = "${(290 - 123.50).toStringAsFixed(2)}";
+                            });
+                          },
+                          label: Text("${(290 - 123.50).toStringAsFixed(2)}"),
+                          selected: false,
+                        ),
+                        SizedBox(width: 8),
+                        ChoiceChip(
+                            onSelected: (value) {
+                              setState(() {
+                                _amount = "100";
+                              });
+                            },
+                            label: Text("100"),
+                            selected: false
+                        ),
+                        SizedBox(width: 8),
+                        ChoiceChip(
+                            onSelected: (value) {
+                              setState(() {
+                                _amount = "300";
+                              });
+                            },
+                            label: Text("300"),
+                            selected: false
+                        ),
+                        SizedBox(width: 8),
+                        ChoiceChip(
+                            onSelected: (value) {
+                              setState(() {
+                                _amount = "1000";
+                              });
+                            },
+                            label: Text("1000"),
+                            selected: false
+                        ),
+                      ],
                     ),
                     Divider(height: 32),
 
@@ -120,7 +163,14 @@ class _Pay extends State<Pay> {
                           widthFactor: 1,
                           child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Privat24_Logo.png/150px-Privat24_Logo.png.png", width: 50),
                         ),
-                        trailing: Text("$_amount грн", style: TextStyle(fontSize: 20)),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text("$_amount", style: TextStyle(fontSize: 20)),
+                            Text(" грн", style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
                         isThreeLine: true,
                       ),
                       style: ElevatedButton.styleFrom(
@@ -147,7 +197,14 @@ class _Pay extends State<Pay> {
                           widthFactor: 1,
                           child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/LIQPAY.svg/150px-LIQPAY.svg.png", width: 50),
                         ),
-                        trailing: Text("$_amount грн", style: TextStyle(fontSize: 20)),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text("$_amount", style: TextStyle(fontSize: 20)),
+                            Text(" грн", style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
                         isThreeLine: true,
                       ),
                       style: ElevatedButton.styleFrom(
@@ -166,7 +223,14 @@ class _Pay extends State<Pay> {
                           widthFactor: 1,
                           child: Image.network("https://static.openfintech.io/payment_methods/easypay/icon.png?w=278&c=v0.59.26", width: 50),
                         ),
-                        trailing: Text("$_amount грн", style: TextStyle(fontSize: 20)),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text("$_amount", style: TextStyle(fontSize: 20)),
+                            Text(" грн", style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
                         isThreeLine: true,
                       ),
                       style: ElevatedButton.styleFrom(
@@ -186,7 +250,14 @@ class _Pay extends State<Pay> {
                           widthFactor: 1,
                           child: Image.network("https://cdn.iconscout.com/icon/free/png-256/credit-card-1454538-1228446.png", width: 50),
                         ),
-                        trailing: Text("$_amount грн", style: TextStyle(fontSize: 20)),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text("$_amount", style: TextStyle(fontSize: 20)),
+                            Text(" грн", style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
                         isThreeLine: true,
                       ),
                       style: ElevatedButton.styleFrom(

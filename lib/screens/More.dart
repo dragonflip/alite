@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
 
-const VERSION = "Версія 0.1.6";
+const VERSION = "Версія 0.1.7";
 
 class More extends StatelessWidget {
   @override
