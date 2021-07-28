@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
+  final Map<String, int> routes = {"/": 0, "/tariff": 1, "/profile": 2, "/more": 3};
+  final List<String> screens = ['/', '/tariff', '/profile', '/more'];
+
   @override
   Widget build(BuildContext context) {
-    Map<String, int> routes = {"/": 0, "/tariff": 1, "/profile": 2, "/more": 3};
     int _currentIndex = 0;
 
-    if (routes.containsKey(ModalRoute.of(context)?.settings.name)) {
+    // if (routes.containsKey(ModalRoute.of(context)?.settings.name)) {
       _currentIndex = routes[ModalRoute.of(context)?.settings.name] as int;
-    }
+    // }
 
     return BottomNavigationBar(
       currentIndex: _currentIndex,
@@ -38,10 +40,11 @@ class MyBottomNavigationBar extends StatelessWidget {
       backgroundColor: Colors.white,
 
       onTap: (value) {
-        List<String> routes = ['/', '/tariff', '/profile', '/more'];
-        Navigator.pushNamedAndRemoveUntil(context, routes[value], (route) => false);
+        if (routes[ModalRoute.of(context)?.settings.name] as int != value) {
+          Navigator.pushNamedAndRemoveUntil(context, screens[value], (route) => false);
 
-        HapticFeedback.vibrate();
+          HapticFeedback.vibrate();
+        }
       },
     );
   }

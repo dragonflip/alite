@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
 
-const VERSION = "Версія 0.0.47";
+const VERSION = "Версія 0.1.3";
 
 class More extends StatelessWidget {
   @override
@@ -20,14 +21,6 @@ class More extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/chat');
-                  },
-                  title: Text("Технічна підтримка"),
-                  leading: Icon(Icons.chat),
-                  trailing: Icon(Icons.keyboard_arrow_right),
-                ),
-                ListTile(
                   onTap: () {},
                   title: Text("Інформація про компанію"),
                   leading: Icon(Icons.info_outlined),
@@ -40,9 +33,12 @@ class More extends StatelessWidget {
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
                 ListTile(
-                  onTap: () {},
-                  title: Text("Сповістити про проблему"),
-                  leading: Icon(Icons.report_problem_outlined),
+                  onTap: () async {
+                    var url = "https://play.google.com/store/apps/details?id=com.abillsmobile.abillsclient";
+                    await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+                  },
+                  title: Text("Оцінити додаток"),
+                  leading: Icon(Icons.star_border),
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
                 ListTile(

@@ -36,13 +36,13 @@ class _Home extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.pushNamed(context, '/chat');
-      //   },
-      //   child: Icon(Icons.chat),
-      //   tooltip: "Чат з тех. підтримкою",
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/chat');
+        },
+        child: Icon(Icons.chat),
+        tooltip: "Чат з тех. підтримкою",
+      ),
       body: SingleChildScrollView(
         child: Container(
           // padding: EdgeInsets.all(8),
