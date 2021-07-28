@@ -8,6 +8,7 @@ import 'screens/More.dart';
 import 'screens/Notifications.dart';
 import 'screens/Chat.dart';
 import 'screens/Pay.dart';
+import 'screens/About.dart';
 
 import 'screens/Login.dart';
 
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/notifications': (context) => Notifications(),
         '/chat': (context) => Chat(),
         '/pay': (context) => Pay(),
+        '/about': (context) => About(),
 
         '/login': (context) => Login(),
       }

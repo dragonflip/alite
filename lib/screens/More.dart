@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
 
-const VERSION = "Версія 0.1.3";
+const VERSION = "Версія 0.1.6";
 
 class More extends StatelessWidget {
   @override
@@ -15,14 +15,15 @@ class More extends StatelessWidget {
       appBar: MyAppBar(),
       body: SingleChildScrollView(
         child: Container(
-          // color: Colors.white,
           child: Card(
             margin: EdgeInsets.all(8),
             child: Column(
               children: [
                 ListTile(
-                  onTap: () {},
-                  title: Text("Інформація про компанію"),
+                  onTap: () {
+                    Navigator.pushNamed(context, "/about");
+                  },
+                  title: Text("Про нас"),
                   leading: Icon(Icons.info_outlined),
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
@@ -33,16 +34,13 @@ class More extends StatelessWidget {
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
                 ListTile(
-                  onTap: () async {
-                    var url = "https://play.google.com/store/apps/details?id=com.abillsmobile.abillsclient";
-                    await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
-                  },
+                  onTap: () => launch("https://play.google.com/store/apps/details?id=com.abillsmobile.abillsclient"),
                   title: Text("Оцінити додаток"),
                   leading: Icon(Icons.star_border),
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
                 ListTile(
-                  onTap: () async {
+                  onTap: () {
                     showDialog(
                       context: context,
                       builder: (_) => AlertDialog(

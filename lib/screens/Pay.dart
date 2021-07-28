@@ -13,7 +13,7 @@ class Pay extends StatefulWidget {
 }
 
 class _Pay extends State<Pay> {
-  var _amount = "0";
+  var _amount = "${(290 - 123.50).toStringAsFixed(2)}";
   var _loading = true;
 
   var _focusNode = FocusNode();
@@ -83,14 +83,14 @@ class _Pay extends State<Pay> {
                     SizedBox(height: 8),
                     TextFormField(
                       cursorHeight: 22,
-
                       focusNode: _focusNode,
-
                       onChanged: (value) {
                         setState(() {
                           _amount = value.isNotEmpty ? value : "0";
                         });
                       },
+
+                      initialValue: "${(290 - 123.50).toStringAsFixed(2)}",
 
                       keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
                       inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$'))],
@@ -101,7 +101,7 @@ class _Pay extends State<Pay> {
                         labelText: "Сума",
                         border: OutlineInputBorder(),
                         counterText: "",
-                        helperText: "Рекомендована сума поповнення: ${(290 - 123.50).toStringAsFixed(2)} грн"
+                        // helperText: "Рекомендована сума поповнення: ${(290 - 123.50).toStringAsFixed(2)} грн"
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
