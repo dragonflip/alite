@@ -9,6 +9,7 @@ class Profile extends StatelessWidget {
     return Scaffold(
       appBar: MyAppBar(),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Container(
           child: Card(
             margin: EdgeInsets.all(8),
@@ -16,42 +17,38 @@ class Profile extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      // OutlinedButton.icon(
-                      //   onPressed: () {},
-                      //   icon: Icon(Icons.edit),
-                      //   label: Text("Редагувати профіль"),
-                      // ),
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: Text('Заморозити аккаунт?'),
-                              content: Text('Замороження аккаунта призупиняє послуги та їх щомісячну оплату.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text("ЗАМОРОЗИТИ"),
-                                ),
-                              ],
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text('Заморозити аккаунт?'),
+                          content: Text('Замороження аккаунта призупиняє послуги та їх щомісячну оплату.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
                             ),
-                          );
-                        },
-                        icon: Icon(Icons.block),
-                        label: Text("Заморозити аккаунт"),
-                      ),
-                    ],
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text("ЗАМОРОЗИТИ"),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.block),
+                    label: Text("Заморозити аккаунт"),
                   ),
                   ListTile(
                     title: Text("Василенко Василь"),
                     subtitle: Text("ПІБ"),
                     leading: Icon(Icons.person),
+                    trailing: IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.edit),
+                      tooltip: "Редагувати профіль",
+                    ),
                   ),
                   ListTile(
                     title: Text("testuser"),

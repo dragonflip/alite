@@ -22,6 +22,7 @@ class More extends StatelessWidget {
     return Scaffold(
       appBar: MyAppBar(),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Container(
           child: Card(
             margin: EdgeInsets.all(8),
@@ -54,8 +55,8 @@ class More extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (_) => AlertDialog(
-                        title: Text('Вийти з кабінету?'),
-                        content: Text('Після виходу з особистого кабінету потрібно знову вказувати дані для входу.'),
+                        title: Text('Вийти з особистого кабінету?'),
+                        content: Text('Після виходу потрібно знову вказувати дані для входу.'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
@@ -85,7 +86,7 @@ class More extends StatelessWidget {
                 Divider(),
                 ListTile(
                   onLongPress: () {
-                    Clipboard.setData(ClipboardData(text: "ABillS Alite, версія $version"));
+                    Clipboard.setData(ClipboardData(text: "ABillS lite, версія $version"));
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Інформацію про версію скопійовано")));
                   },
                   title: FutureBuilder(

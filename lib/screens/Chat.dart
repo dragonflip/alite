@@ -84,6 +84,8 @@ class Chat extends StatelessWidget {
           separatorBuilder: (_, index) => Divider(
             height: 0,
           ),
+          physics: BouncingScrollPhysics(),
+
           itemCount: 4,
           itemBuilder: (_, index) => ListTile(
             onTap: () {},

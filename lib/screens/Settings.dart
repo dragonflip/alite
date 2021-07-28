@@ -8,27 +8,40 @@ class Settings extends StatelessWidget {
     return Scaffold(
       appBar: MyAppBar("Налаштування"),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Container(
           child: Card(
             margin: EdgeInsets.all(8),
             child: Column(
               children: [
                 ListTile(
-                  onTap: () {},
+                  title: Text("Мова"),
+                  leading: Icon(Icons.language),
+                  trailing: DropdownButton(
+                    onChanged: (value) {},
+                    value: 0,
+                    items: [
+                      DropdownMenuItem(
+                        value: 0,
+                        child: Text("Українська"),
+                      ),
+                      DropdownMenuItem(
+                        value: 1,
+                        child: Text("Русский"),
+                      ),
+                      DropdownMenuItem(
+                        value: 2,
+                        child: Text("English"),
+                      ),
+                    ]
+                  ),
+                ),
+                ListTile(
                   title: Text("Сповіщення"),
                   leading: Icon(Icons.notifications),
                   trailing: Switch(
                     onChanged: (value) {},
                     value: true,
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  title: Text("Темна тема"),
-                  leading: Icon(Icons.dark_mode),
-                  trailing: Switch(
-                    onChanged: (value) {},
-                    value: false,
                   ),
                 ),
               ],

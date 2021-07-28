@@ -24,10 +24,8 @@ class Tariff extends StatelessWidget {
     return Scaffold(
       appBar: MyAppBar(),
       body: Container(
-        // height: 400,
         child: ListView.builder(
           itemCount: 4,
-          // scrollDirection: Axis.horizontal,
           controller: _scrollController,
           physics: BouncingScrollPhysics(),
 
@@ -40,9 +38,9 @@ class Tariff extends StatelessWidget {
                   index == 1 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.check_circle, color: Colors.red),
+                      Icon(Icons.check_circle, color: Colors.green),
                       SizedBox(width: 8),
-                      Text("Тариф «${names[index]}»", style: TextStyle(fontSize: 24, color: Colors.red)),
+                      Text("Тариф «${names[index]}»", style: TextStyle(fontSize: 24)),
                     ],
                   ) : Text("Тариф «${names[index]}»", style: TextStyle(fontSize: 24)),
 
@@ -67,7 +65,10 @@ class Tariff extends StatelessWidget {
                     trailing: index != 1 ? ElevatedButton(
                       onPressed: () {},
                       child: Text("ПІДКЛЮЧИТИ"),
-                    ) : Text("АКТИВНИЙ", style: TextStyle(color: Colors.green, fontSize: 16)),
+                    ) : TextButton(
+                      onPressed: () {},
+                      child: Text("ПРИЗУПИНИТИ"),
+                    ),
                   ),
                 ],
               ),

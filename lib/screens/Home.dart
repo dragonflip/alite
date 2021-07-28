@@ -44,6 +44,7 @@ class _Home extends State<Home> {
         tooltip: "Чат з тех. підтримкою",
       ),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Container(
           child: Column(
             children: [

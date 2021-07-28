@@ -9,6 +9,7 @@ class About extends StatelessWidget {
     return Scaffold(
       appBar: MyAppBar("Про нас"),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Container(
           child: Card(
             margin: EdgeInsets.all(8),

@@ -122,6 +122,7 @@ class _Login extends State<Login> {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
           child: Container(
             padding: EdgeInsets.all(16),
             child: Column(
