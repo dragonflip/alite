@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/MyAppBar.dart';
@@ -34,6 +33,7 @@ class _Pay extends State<Pay> {
       appBar: MyAppBar("Поповнити"),
       body: Container(
         child: ListView(
+          physics: BouncingScrollPhysics(),
           children: [
             if (_loading) LinearProgressIndicator(),
             Card(
@@ -71,7 +71,6 @@ class _Pay extends State<Pay> {
                 ),
               ),
             ),
-            // SizedBox(height: 16),
             Card(
               margin: EdgeInsets.all(8),
               child: Padding(
@@ -94,7 +93,6 @@ class _Pay extends State<Pay> {
 
                       keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
                       inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$'))],
-                      // inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^([0-9]+)$'))],
                       maxLength: 6,
 
                       decoration: InputDecoration(
@@ -108,7 +106,6 @@ class _Pay extends State<Pay> {
                           return "Введіть суму поповнення";
                         }
                       },
-                      // onSaved: (value) => _password = value,
                     ),
                     Divider(height: 32),
 
@@ -139,7 +136,7 @@ class _Pay extends State<Pay> {
                           var url = "https://www.liqpay.ua/uk/checkout/card/380660068608";
                           await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
                         } else {
-                          // _focusNode.unfocus();
+                          // TODO _focusNode.unfocus();
                           _focusNode.requestFocus();
                         }
                       },

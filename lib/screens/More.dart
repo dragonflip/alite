@@ -28,7 +28,9 @@ class More extends StatelessWidget {
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, "/settings");
+                  },
                   title: Text("Налаштування"),
                   leading: Icon(Icons.settings_outlined),
                   trailing: Icon(Icons.keyboard_arrow_right),
@@ -79,7 +81,7 @@ class More extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Інформацію про версію скопійовано")));
                   },
                   title: Text(VERSION),
-                  leading: Icon(Icons.bug_report_outlined),
+                  leading: Icon(Icons.code),
                 ),
               ],
             ),

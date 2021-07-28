@@ -9,6 +9,7 @@ import 'screens/Notifications.dart';
 import 'screens/Chat.dart';
 import 'screens/Pay.dart';
 import 'screens/About.dart';
+import 'screens/Settings.dart';
 
 import 'screens/Login.dart';
 
@@ -20,7 +21,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'ABillS',
-      theme: ThemeData(primarySwatch: Colors.red),
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+        pageTransitionsTheme: PageTransitionsTheme(
+            builders: {
+              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            }
+        ),
+      ),
+
+
 
       initialRoute: '/login',
       routes: {
@@ -33,6 +44,7 @@ class MyApp extends StatelessWidget {
         '/chat': (context) => Chat(),
         '/pay': (context) => Pay(),
         '/about': (context) => About(),
+        '/settings': (context) => Settings(),
 
         '/login': (context) => Login(),
       }
