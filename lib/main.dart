@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
+      // TODO checkLogin
       initialRoute: '/login',
       routes: {
         '/': (context) => Home(),

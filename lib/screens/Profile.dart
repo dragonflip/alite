@@ -16,6 +16,20 @@ class Profile extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
               child: Column(
                 children: [
+                  Row(
+                    children: [
+                      // OutlinedButton.icon(
+                      //   onPressed: () {},
+                      //   icon: Icon(Icons.edit),
+                      //   label: Text("Редагувати профіль"),
+                      // ),
+                      OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: Icon(Icons.block),
+                        label: Text("Заморозити аккаунт"),
+                      ),
+                    ],
+                  ),
                   ListTile(
                     title: Text("Василенко Василь"),
                     subtitle: Text("ПІБ"),

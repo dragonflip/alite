@@ -45,8 +45,6 @@ class _Home extends State<Home> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          // padding: EdgeInsets.all(8),
-          // constraints: BoxConstraints.expand(),
           child: Column(
             children: [
               Card(
@@ -68,7 +66,7 @@ class _Home extends State<Home> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.pushReplacementNamed(context, "/profile");
+                              Navigator.pushNamed(context, "profile");
                             },
                             child: Text("Мій профіль"),
                           ),
@@ -89,7 +87,6 @@ class _Home extends State<Home> {
                                 ],
                               ),
                               SizedBox(height: 8),
-                              // Text("Рекомендований платіж: 290 грн"),
                               Text("15.08.2021 буде знято 290 грн"),
                               SizedBox(height: 16),
 
@@ -133,18 +130,19 @@ class _Home extends State<Home> {
                       // Slider(
                       //   value: 0.25,
                       //   onChanged: (value) {
-                      //     Navigator.pushReplacementNamed(context, "/tariff");
+                      //     Navigator.pushNamed(context, "/tariff");
                       //   },
                       //   divisions: 4,
                       // ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          OutlinedButton(
+                          OutlinedButton.icon(
                             onPressed: () {
-                              Navigator.pushReplacementNamed(context, "/tariff", arguments: "change_tariff");
+                              Navigator.pushNamed(context, "/tariff", arguments: "change_tariff");
                             },
-                            child: Text("ЗМІНИТИ"),
+                            icon: Icon(Icons.swap_horiz),
+                            label: Text("ЗМІНИТИ"),
                           ),
                         ],
                       ),

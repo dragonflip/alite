@@ -18,7 +18,7 @@ class About extends StatelessWidget {
                 children: [
                   Image.asset("assets/logo.png", width: 250, fit: BoxFit.fill),
                   SizedBox(height: 16),
-                  Text("ABillS (Advanced Billing Solutions) — надежная конвергентная биллинговая система, предназначенная для учета и тарификации всего спектра услуг предоставляемых операторами связи (Dialup, VPN, Hotspot, VoIP, IPTV). \nСистема является многофункциональной, модульной ACP (Автоматической Системой Расчётов) с открытым программным кодом, в последующем будет называться Биллингом.", style: TextStyle(fontSize: 18)),
+                  Text("ABillS (Advanced Billing Solutions) — надійна конвергентна білінгова система, призначена для обліку і тарифікації всього спектра послуг, що надаються операторами зв'язку (Dialup, VPN, Hotspot, VoIP, IPTV). \nСистема є багатофункціональною, модульною ACP (Автоматична Система Розрахунків) з відкритим програмним кодом.", style: TextStyle(fontSize: 18)),
                   SizedBox(height: 16),
                   InkWell(
                     onTap: () => launch("http://abills.net.ua"),

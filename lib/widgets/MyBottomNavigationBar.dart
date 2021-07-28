@@ -9,9 +9,9 @@ class MyBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     int _currentIndex = 0;
 
-    // if (routes.containsKey(ModalRoute.of(context)?.settings.name)) {
+    if (routes.containsKey(ModalRoute.of(context)?.settings.name)) {
       _currentIndex = routes[ModalRoute.of(context)?.settings.name] as int;
-    // }
+    }
 
     return BottomNavigationBar(
       currentIndex: _currentIndex,
@@ -40,8 +40,8 @@ class MyBottomNavigationBar extends StatelessWidget {
       backgroundColor: Colors.white,
 
       onTap: (value) {
-        if (routes[ModalRoute.of(context)?.settings.name] as int != value) {
-          Navigator.pushNamedAndRemoveUntil(context, screens[value], (route) => false);
+        if (routes.containsKey(ModalRoute.of(context)?.settings.name) && routes[ModalRoute.of(context)?.settings.name] as int != value) {
+          Navigator.pushNamed(context, screens[value]);
 
           HapticFeedback.vibrate();
         }

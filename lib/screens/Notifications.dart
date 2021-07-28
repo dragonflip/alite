@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:alite/widgets/MyAppBar.dart';
-import '../widgets/MyBottomNavigationBar.dart';
 
 class Notifications extends StatelessWidget {
   @override
