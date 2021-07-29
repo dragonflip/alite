@@ -38,7 +38,7 @@ class _Home extends State<Home> {
       appBar: MyAppBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/chat');
+          Navigator.pushNamed(context, '/support');
         },
         child: Icon(Icons.chat),
         tooltip: "Чат з тех. підтримкою",
@@ -96,8 +96,9 @@ class _Home extends State<Home> {
                                   Navigator.pushNamed(context, "/pay");
                                 },
                                 child: Text("ПОПОВНИТИ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, letterSpacing: 1.5)),
-                                style: OutlinedButton.styleFrom(
+                                style: ElevatedButton.styleFrom(
                                   fixedSize: Size(MediaQuery.of(context).size.width - 16 * 3, 55),
+                                  elevation: 0
                                   // backgroundColor: Colors.green,
                                 ),
                               ),
@@ -105,7 +106,7 @@ class _Home extends State<Home> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 4),
                     ],
                   ),
                 ),
@@ -113,13 +114,13 @@ class _Home extends State<Home> {
               Card(
                 margin: EdgeInsets.all(8),
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
+                  padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Тариф «Домашній+»", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                          Text("Інтернет «Домашній+»", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                         ],
                       ),
                       SizedBox(height: 8),
@@ -148,14 +149,9 @@ class _Home extends State<Home> {
                         subtitle: Text("Інтернет"),
                         leading: Icon(Icons.network_check),
                       ),
-                      ListTile(
-                        title: Text("210 каналів"),
-                        subtitle: Text("Телебачення"),
-                        leading: Icon(Icons.live_tv),
-                      ),
                       Divider(),
                       ListTile(
-                        title: Text("250 грн", style: TextStyle(fontSize: 18)),
+                        title: Text("150 грн", style: TextStyle(fontSize: 18)),
                         subtitle: Text("Ціна"),
                         leading: Icon(Icons.attach_money),
                       ),
@@ -166,7 +162,48 @@ class _Home extends State<Home> {
               Card(
                 margin: EdgeInsets.all(8),
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
+                  padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Телебачення «Мультики+»", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          OutlinedButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(context, "/tariff", arguments: "change_tariff");
+                            },
+                            icon: Icon(Icons.swap_horiz),
+                            label: Text("ЗМІНИТИ"),
+                          ),
+                        ],
+                      ),
+
+                      ListTile(
+                        title: Text("210 каналів"),
+                        subtitle: Text("Телебачення"),
+                        leading: Icon(Icons.live_tv),
+                      ),
+                      Divider(),
+                      ListTile(
+                        title: Text("100 грн", style: TextStyle(fontSize: 18)),
+                        subtitle: Text("Ціна"),
+                        leading: Icon(Icons.attach_money),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Card(
+                margin: EdgeInsets.all(8),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
                   child: Column(
                     children: [
                       Row(

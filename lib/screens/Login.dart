@@ -25,7 +25,7 @@ class _Login extends State<Login> {
 
     try {
       // Check internet connection
-      await http.get(Uri.parse('https://cloudflare.com')).timeout(Duration(seconds: 2));
+      await http.get(Uri.parse('https://cloudflare.com')).timeout(Duration(seconds: 5));
 
       try {
         var url = Uri.parse('https://$_url:$_port/api.cgi/users/login');
@@ -33,7 +33,7 @@ class _Login extends State<Login> {
           url,
           body: jsonEncode({'login': _login, 'password': _password}),
           headers: {"Content-Type" : "application/json"}
-        ).timeout(Duration(seconds: 10));
+        ).timeout(Duration(seconds: 5));
 
         print(_login);
         print(_password);
@@ -149,6 +149,7 @@ class _Login extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),

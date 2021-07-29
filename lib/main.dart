@@ -6,6 +6,7 @@ import 'screens/Profile.dart';
 import 'screens/More.dart';
 
 import 'screens/Notifications.dart';
+import 'screens/Support.dart';
 import 'screens/Chat.dart';
 import 'screens/Pay.dart';
 import 'screens/About.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/more': (context) => More(),
 
         '/notifications': (context) => Notifications(),
+        '/support': (context) => Support(),
         '/chat': (context) => Chat(),
         '/pay': (context) => Pay(),
         '/about': (context) => About(),

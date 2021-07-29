@@ -6,102 +6,144 @@ class Chat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> titles = ['Не працює інтернет', 'Нестабільний інтернет', 'Невідповідність заявленої в тарифі швидкості', 'Тупить роутер'];
-    List<String> messages = ['Ви: Перестав працювати інтернет після сильного вітру. Робіть щось з тим вітром, я за що гроші плачу', 'Ви: Не можу докачати фільм до кінця!!! Хочу дивитись фільми!!', 'Ви: Поясніть будь ласка, чому в тарифі заявлена швидкість 150 Мб/с, а в мене чомусь 65 Мб/c', 'Відповідь: Перезавантажте роутер, і не кіпішуйте. Будьте здорові!!'];
-    List<String> dates = ['12:17', '10:42', '10.07.2021', '23.03.2019'];
     List<String> statuses = ['Відкрито', 'Відкрито', 'Відкрито', 'Закрито'];
 
     return Scaffold(
-      appBar: MyAppBar("Технічна підтримка"),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (_) => AlertDialog(
-              title: Text('Нове повідомлення'),
-              insetPadding: EdgeInsets.all(0),
-              scrollable: true,
-              content: Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      autofocus: true,
-                      cursorHeight: 22,
-                      textCapitalization: TextCapitalization.sentences,
-
-                      decoration: InputDecoration(
-                        labelText: "Тема",
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Введіть тему повідомлення";
-                        }
-                      },
-                      // onSaved: (value) => _login = value,
-                    ),
-                    SizedBox(height: 8),
-                    TextFormField(
-                      cursorHeight: 22,
-                      maxLines: 10,
-                      minLines: 5,
-                      textCapitalization: TextCapitalization.sentences,
-
-                      decoration: InputDecoration(
-                        labelText: "Текст повідомлення",
-                        alignLabelWithHint: true,
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Введіть текст повідомлення";
-                        }
-                      },
-                      // onSaved: (value) => _login = value,
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text("ВІДПРАВИТИ"),
-                ),
-              ],
-            ),
-          );
-        },
-        child: Icon(Icons.edit),
-        tooltip: "Нове повідомлення в тех. підтримку",
-      ),
+      backgroundColor: Colors.white,
+      appBar: MyAppBar(titles[ModalRoute.of(context)?.settings.arguments as int]),
       body: Container(
-        child: ListView.separated(
-          separatorBuilder: (_, index) => Divider(
-            height: 0,
-          ),
-          physics: BouncingScrollPhysics(),
-
-          itemCount: 4,
-          itemBuilder: (_, index) => ListTile(
-            onTap: () {},
-            title: Text(titles[index], maxLines: 1, overflow: TextOverflow.ellipsis),
-            subtitle: Text(messages[index], maxLines: 2, overflow: TextOverflow.ellipsis),
-            trailing: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+        padding: EdgeInsets.all(8),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                physics: BouncingScrollPhysics(),
+                children: [
+                  Chip(label: Text("12.07.2021")),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Card(
+                      color: Colors.red,
+                      margin: EdgeInsets.symmetric(vertical: 4),
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text("Привіт", style: TextStyle(color: Colors.white, fontSize: 16)),
+                            SizedBox(width: 8),
+                            Text("13:28", style: TextStyle(color: Colors.white54, fontSize: 12))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Card(
+                      color: Colors.grey[200],
+                      margin: EdgeInsets.symmetric(vertical: 4),
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          // mainAxisAlignment: MainAxisAlignment.,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text("Що робиш?", style: TextStyle(color: Colors.black, fontSize: 16)),
+                            SizedBox(width: 8),
+                            Text("13:28", style: TextStyle(color: Colors.black54, fontSize: 12))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Card(
+                      color: Colors.red,
+                      margin: EdgeInsets.symmetric(vertical: 4),
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          // mainAxisAlignment: MainAxisAlignment.,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text("Ремонтую інтернет після вітру", style: TextStyle(color: Colors.white, fontSize: 16)),
+                            SizedBox(width: 8),
+                            Text("13:28", style: TextStyle(color: Colors.white54, fontSize: 12))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Card(
+                      color: Colors.grey[200],
+                      margin: EdgeInsets.symmetric(vertical: 4),
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text("Зараз приїде наша бригада", style: TextStyle(color: Colors.black, fontSize: 16)),
+                            SizedBox(width: 8),
+                            Text("13:28", style: TextStyle(color: Colors.black54, fontSize: 12))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Card(
+                      color: Colors.grey[200],
+                      margin: EdgeInsets.symmetric(vertical: 4),
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          // mainAxisAlignment: MainAxisAlignment.,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text("Просто чекайте нас!", style: TextStyle(color: Colors.black, fontSize: 16)),
+                            SizedBox(width: 8),
+                            Text("13:28", style: TextStyle(color: Colors.black54, fontSize: 12))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(statuses[index], style: TextStyle(color: (statuses[index] == "Відкрито" ? Colors.green : Colors.red), fontSize: 12)),
-                Text(dates[index]),
+                ModalRoute.of(context)?.settings.arguments as int != 3 ? Expanded(
+                  child: TextFormField(
+                    cursorHeight: 22,
+                    textCapitalization: TextCapitalization.sentences,
+                    maxLines: 5,
+                    minLines: 1,
+                    decoration: InputDecoration(
+                      hintText: "Повідомлення",
+                      suffixIcon: IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.send, color: Colors.red),
+                        tooltip: "Відправити",
+                      ),
+                    ),
+                  )
+                ) : Text("Тема закрита", style: TextStyle(color: Colors.red, fontSize: 18)),
               ],
             ),
-            isThreeLine: true,
-            tileColor: Colors.white,
-          ),
-        ),
+          ],
+        )
       ),
     );
   }

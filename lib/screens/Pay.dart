@@ -15,7 +15,7 @@ class _Pay extends State<Pay> {
   var _amount = "${(290 - 123.50).toStringAsFixed(2)}";
   var _loading = true;
 
-  var _focusNode = FocusNode();
+  final _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -116,34 +116,30 @@ class _Pay extends State<Pay> {
                             });
                           },
                           label: Text("${(290 - 123.50).toStringAsFixed(2)}"),
-                          tooltip: "Рекомендована сума поповнення",
+                          avatar: Icon(Icons.looks_one, color: Colors.red),
+                          tooltip: "Рекомендована сума поповнення на 1 місяць",
                         ),
                         SizedBox(width: 8),
                         ActionChip(
                           onPressed: () {
                             setState(() {
-                              _amount = "100";
+                              _amount = "${(290 * 3 - 123.50).toStringAsFixed(2)}";
                             });
                           },
-                          label: Text("100"),
+                          label: Text("${(290 * 3 - 123.50).toStringAsFixed(2)}"),
+                          avatar: Icon(Icons.looks_3, color: Colors.red),
+                          tooltip: "Рекомендована сума поповнення на 3 місяці",
                         ),
                         SizedBox(width: 8),
                         ActionChip(
                           onPressed: () {
                             setState(() {
-                              _amount = "300";
+                              _amount = "${(290 * 6 - 123.50).toStringAsFixed(2)}";
                             });
                           },
-                          label: Text("300"),
-                        ),
-                        SizedBox(width: 8),
-                        ActionChip(
-                          onPressed: () {
-                            setState(() {
-                              _amount = "1000";
-                            });
-                          },
-                          label: Text("1000"),
+                          label: Text("${(290 * 6 - 123.50).toStringAsFixed(2)}"),
+                          avatar: Icon(Icons.looks_6, color: Colors.red),
+                          tooltip: "Рекомендована сума поповнення на 6 місяців",
                         ),
                       ],
                     ),
@@ -251,7 +247,25 @@ class _Pay extends State<Pay> {
                     SizedBox(height: 8),
 
                     ElevatedButton(
-                      onPressed: null,
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text('Оформити кредит?'),
+                            content: Text('Вам буде надано кредит до 15.08.2021.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text("ОФОРМИТИ"),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                       child: ListTile(
                         title: Text("Кредит"),
                         subtitle: Text("Оформлення кредиту"),

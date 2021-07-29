@@ -65,6 +65,9 @@ class Tariff extends StatelessWidget {
                     trailing: index != 1 ? ElevatedButton(
                       onPressed: () {},
                       child: Text("ПІДКЛЮЧИТИ"),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0
+                      ),
                     ) : TextButton(
                       onPressed: () {},
                       child: Text("ПРИЗУПИНИТИ"),
