@@ -21,9 +21,11 @@ class _Home extends State<Home> {
     var url = Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid/pi');
     var response = await http.get(url, headers: {"KEY": "testAPI_KEY12"});
 
-    setState(() {
-      _pib = jsonDecode(utf8.decode(response.bodyBytes))['fio'];
-    });
+    return jsonDecode(utf8.decode(response.bodyBytes));
+
+    // setState(() {
+      // _pib = jsonDecode(utf8.decode(response.bodyBytes))['fio'];
+    // });
   }
 
   @override
@@ -58,12 +60,24 @@ class _Home extends State<Home> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Василенко Василь", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
-                              Text("Договір №35114"),
-                            ],
+                          FutureBuilder(
+                            future: getData(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                final data = snapshot.data as Map<String, dynamic>;
+                                print(data);
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("${data['fio']}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
+                                    Text("Договір №${data['contractId']}"),
+                                  ],
+                                );
+                              } else {
+                                return Text("...");
+                              }
+                            },
                           ),
                           TextButton(
                             onPressed: () {
@@ -146,53 +160,12 @@ class _Home extends State<Home> {
 
                       ListTile(
                         title: Text("50 Мб/с"),
-                        subtitle: Text("Інтернет"),
+                        subtitle: Text("Швидкість"),
                         leading: Icon(Icons.network_check),
                       ),
                       Divider(),
                       ListTile(
-                        title: Text("150 грн", style: TextStyle(fontSize: 18)),
-                        subtitle: Text("Ціна"),
-                        leading: Icon(Icons.attach_money),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                margin: EdgeInsets.all(8),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Телебачення «Мультики+»", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              Navigator.pushNamed(context, "/tariff", arguments: "change_tariff");
-                            },
-                            icon: Icon(Icons.swap_horiz),
-                            label: Text("ЗМІНИТИ"),
-                          ),
-                        ],
-                      ),
-
-                      ListTile(
-                        title: Text("210 каналів"),
-                        subtitle: Text("Телебачення"),
-                        leading: Icon(Icons.live_tv),
-                      ),
-                      Divider(),
-                      ListTile(
-                        title: Text("100 грн", style: TextStyle(fontSize: 18)),
+                        title: Text("250 грн", style: TextStyle(fontSize: 18)),
                         subtitle: Text("Ціна"),
                         leading: Icon(Icons.attach_money),
                       ),

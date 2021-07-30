@@ -40,21 +40,16 @@ class Tariff extends StatelessWidget {
                     children: [
                       Icon(Icons.check_circle, color: Colors.green),
                       SizedBox(width: 8),
-                      Text("Тариф «${names[index]}»", style: TextStyle(fontSize: 24)),
+                      Text("Інтернет «${names[index]}»", style: TextStyle(fontSize: 24)),
                     ],
-                  ) : Text("Тариф «${names[index]}»", style: TextStyle(fontSize: 24)),
+                  ) : Text("Інтернет «${names[index]}»", style: TextStyle(fontSize: 24)),
 
                   SizedBox(height: 8),
 
                   ListTile(
                     title: Text("${speeds[index]}"),
-                    subtitle: Text("Інтернет"),
+                    subtitle: Text("Швидкість"),
                     leading: Icon(Icons.network_check),
-                  ),
-                  ListTile(
-                    title: Text("${channels[index]} каналів"),
-                    subtitle: Text("Телебачення"),
-                    leading: Icon(Icons.live_tv),
                   ),
                   Divider(),
 
