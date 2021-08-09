@@ -18,10 +18,16 @@ class _Home extends State<Home> {
     final prefs = await SharedPreferences.getInstance();
     _uid = prefs.getString("uid");
 
-    var url = Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid/pi');
-    var response = await http.get(url, headers: {"KEY": "testAPI_KEY12"});
+    var overallInfo = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid'), headers: {"KEY": "testAPI_KEY12"});
+    var personalInfo = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid/pi'), headers: {"KEY": "testAPI_KEY12"});
 
-    return jsonDecode(utf8.decode(response.bodyBytes));
+    var data = jsonDecode(utf8.decode(personalInfo.bodyBytes));
+    data.addAll(jsonDecode(utf8.decode(overallInfo.bodyBytes)));
+
+    var res = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/abon"), headers: {"KEY": "testAPI_KEY12"});
+    // print(res.body);
+
+    return data;
 
     // setState(() {
       // _pib = jsonDecode(utf8.decode(response.bodyBytes))['fio'];
@@ -50,83 +56,83 @@ class _Home extends State<Home> {
         child: Container(
           child: Column(
             children: [
-              Card(
-                margin: EdgeInsets.all(8),
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          FutureBuilder(
-                            future: getData(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                final data = snapshot.data as Map<String, dynamic>;
-                                print(data);
-
-                                return Column(
+              FutureBuilder(
+                future: getData(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final data = snapshot.data as Map<String, dynamic>;
+                    // print(data);
+                    
+                    return Card(
+                      margin: EdgeInsets.fromLTRB(8, 8, 8, 4),
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text("${data['fio']}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
                                     Text("Договір №${data['contractId']}"),
                                   ],
-                                );
-                              } else {
-                                return Text("...");
-                              }
-                            },
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, "/profile");
-                            },
-                            child: Text("Мій профіль"),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              Text("БАЛАНС", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w300)),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text("123.50", style: TextStyle(fontSize: 32, color: Colors.green)),
-                                  Text(" грн", style: TextStyle(fontSize: 18, color: Colors.green)),
-                                ],
-                              ),
-                              SizedBox(height: 8),
-                              Text("15.08.2021 буде знято 290 грн"),
-                              SizedBox(height: 16),
-
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, "/pay");
-                                },
-                                child: Text("ПОПОВНИТИ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, letterSpacing: 1.5)),
-                                style: ElevatedButton.styleFrom(
-                                  fixedSize: Size(MediaQuery.of(context).size.width - 16 * 3, 55),
-                                  elevation: 0
-                                  // backgroundColor: Colors.green,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, "/profile");
+                                  },
+                                  child: Text("Мій профіль"),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  children: [
+                                    Text("БАЛАНС", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w300)),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text("${double.parse(data['deposit']).toStringAsFixed(2)}", style: TextStyle(fontSize: 32, color: Colors.green)),
+                                        Text(" грн", style: TextStyle(fontSize: 18, color: Colors.green)),
+                                      ],
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text("15.08.2021 буде знято 290 грн"),
+                                    SizedBox(height: 16),
+
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, "/pay");
+                                      },
+                                      child: Text("ПОПОВНИТИ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, letterSpacing: 1.5)),
+                                      style: ElevatedButton.styleFrom(
+                                          fixedSize: Size(MediaQuery.of(context).size.width - 16 * 3, 55),
+                                          elevation: 0
+                                        // backgroundColor: Colors.green,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 4),
+                          ],
+                        ),
                       ),
-                      SizedBox(height: 4),
-                    ],
-                  ),
-                ),
+                    );
+                  } else {
+                    return LinearProgressIndicator();
+                  }
+                },
               ),
               Card(
-                margin: EdgeInsets.all(8),
+                margin: EdgeInsets.fromLTRB(8, 4, 8, 4),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
                   child: Column(
@@ -174,7 +180,7 @@ class _Home extends State<Home> {
                 ),
               ),
               Card(
-                margin: EdgeInsets.all(8),
+                margin: EdgeInsets.fromLTRB(8, 4, 8, 8),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
                   child: Column(

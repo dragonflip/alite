@@ -32,7 +32,7 @@ class Tariff extends StatelessWidget {
           itemBuilder: (_, index) => Card(
             margin: EdgeInsets.all(8),
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
               child: Column(
                 children: [
                   index == 1 ? Row(
