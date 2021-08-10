@@ -17,11 +17,12 @@ class _Profile extends State<Profile> {
   var _edit_email = false;
   final _focusNode = FocusNode();
 
-  var _uid;
+  var _uid, _login;
 
   getData() async {
     final prefs = await SharedPreferences.getInstance();
     _uid = prefs.getString("uid");
+    _login = prefs.getString("login");
 
     var profile = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid/pi'), headers: {"KEY": "testAPI_KEY12"});
 
@@ -77,7 +78,7 @@ class _Profile extends State<Profile> {
                           leading: Icon(Icons.person),
                         ),
                         ListTile(
-                          title: Text("testuser"),
+                          title: Text("$_login"),
                           subtitle: Text("Логін"),
                           leading: Icon(Icons.assignment_ind),
                         ),
