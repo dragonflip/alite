@@ -31,13 +31,22 @@ class _Home extends State<Home> {
 
     for (int i = 0; i < servicesInfo.length; i++) {
       if (servicesInfo[i]['activeService'] == "1") {
-        print(servicesInfo[i]);
+        // print(servicesInfo[i]);
         services.add(servicesInfo[i]);
       }
     }
 
-    return {"profile": profile, "services": services};
-    // return profile;
+    var internetResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/internet"), headers: {"KEY": "testAPI_KEY12"});
+    var internetID = jsonDecode(utf8.decode(internetResponse.bodyBytes))[0]['id'];
+
+    var internetInfo = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/internet/$internetID"), headers: {"KEY": "testAPI_KEY12"});
+    var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes));
+
+
+    // var api = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/tp/106/intervals"), headers: {"KEY": "testAPI_KEY12"});
+    // print(api.body);
+
+    return {"profile": profile, "services": services, "internet": internet};
   }
 
   @override
@@ -141,7 +150,7 @@ class _Home extends State<Home> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("Інтернет «Домашній+»", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                Text("Інтернет «${data['internet']['tpName']}»", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                               ],
                             ),
                             SizedBox(height: 8),
@@ -166,13 +175,13 @@ class _Home extends State<Home> {
                             ),
 
                             ListTile(
-                              title: Text("50 Мб/с"),
+                              title: Text("${data['internet']['speed']} Мб/с"),
                               subtitle: Text("Швидкість"),
                               leading: Icon(Icons.network_check),
                             ),
                             Divider(),
                             ListTile(
-                              title: Text("250 грн", style: TextStyle(fontSize: 18)),
+                              title: Text("${data['internet']['monthAbon']} грн", style: TextStyle(fontSize: 18)),
                               subtitle: Text("Ціна"),
                               leading: Icon(Icons.attach_money),
                             ),
@@ -181,7 +190,7 @@ class _Home extends State<Home> {
                       ),
                     ),
                     for (var item in data['services']) Card(
-                      margin: EdgeInsets.fromLTRB(8, 4, 8, 8),
+                      margin: EdgeInsets.fromLTRB(8, 4, 8, 4),
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
                         child: Column(
@@ -214,6 +223,7 @@ class _Home extends State<Home> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 4),
                   ],
                 );
               } else {
