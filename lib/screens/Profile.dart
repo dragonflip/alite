@@ -18,6 +18,7 @@ class _Profile extends State<Profile> {
   final _focusNode = FocusNode();
 
   var _uid, _login;
+  var result;
 
   getData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -30,6 +31,12 @@ class _Profile extends State<Profile> {
   }
 
   @override
+  void initState() {
+    result = getData();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(),
@@ -37,7 +44,7 @@ class _Profile extends State<Profile> {
         physics: BouncingScrollPhysics(),
         child: Container(
           child: FutureBuilder(
-            future: getData(),
+            future: result,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final data = snapshot.data as Map<String, dynamic>;

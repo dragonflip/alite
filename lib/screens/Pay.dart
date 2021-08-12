@@ -112,34 +112,34 @@ class _Pay extends State<Pay> {
                         ActionChip(
                           onPressed: () {
                             setState(() {
-                              _amount = "${(290 - 123.50).toStringAsFixed(2)}";
+                              _amount = "${(290).toStringAsFixed(2)}";
                             });
                           },
-                          label: Text("${(290 - 123.50).toStringAsFixed(2)}"),
+                          label: Text("${(290).toStringAsFixed(2)}"),
                           avatar: Icon(Icons.looks_one, color: Colors.red),
-                          tooltip: "Рекомендована сума поповнення на 1 місяць",
+                          tooltip: "Сума поповнення на 1 місяць",
                         ),
                         SizedBox(width: 8),
                         ActionChip(
                           onPressed: () {
                             setState(() {
-                              _amount = "${(290 * 3 - 123.50).toStringAsFixed(2)}";
+                              _amount = "${(290 * 3).toStringAsFixed(2)}";
                             });
                           },
-                          label: Text("${(290 * 3 - 123.50).toStringAsFixed(2)}"),
+                          label: Text("${(290 * 3).toStringAsFixed(2)}"),
                           avatar: Icon(Icons.looks_3, color: Colors.red),
-                          tooltip: "Рекомендована сума поповнення на 3 місяці",
+                          tooltip: "Сума поповнення на 3 місяці",
                         ),
                         SizedBox(width: 8),
                         ActionChip(
                           onPressed: () {
                             setState(() {
-                              _amount = "${(290 * 6 - 123.50).toStringAsFixed(2)}";
+                              _amount = "${(290 * 6).toStringAsFixed(2)}";
                             });
                           },
-                          label: Text("${(290 * 6 - 123.50).toStringAsFixed(2)}"),
+                          label: Text("${(290 * 6).toStringAsFixed(2)}"),
                           avatar: Icon(Icons.looks_6, color: Colors.red),
-                          tooltip: "Рекомендована сума поповнення на 6 місяців",
+                          tooltip: "Сума поповнення на 6 місяців",
                         ),
                       ],
                     ),

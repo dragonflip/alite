@@ -13,6 +13,7 @@ class Home extends StatefulWidget {
 
 class _Home extends State<Home> {
   var _uid, _pib;
+  var result;
 
   getData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -42,17 +43,20 @@ class _Home extends State<Home> {
     var internetInfo = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/internet/$internetID"), headers: {"KEY": "testAPI_KEY12"});
     var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes));
 
-
-    // var api = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/tp/106/intervals"), headers: {"KEY": "testAPI_KEY12"});
-    // print(api.body);
+    try {
+      var api = await http.post(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/msgs/list"), body: jsonEncode({"uid": _uid}), headers: {"KEY": "testAPI_KEY12"});
+      print(api.body);
+    } catch (e) {
+      print(e);
+    }
 
     return {"profile": profile, "services": services, "internet": internet};
   }
 
   @override
   void initState() {
+    result = getData();
     super.initState();
-    // getData();
   }
 
   @override
@@ -70,11 +74,10 @@ class _Home extends State<Home> {
         physics: BouncingScrollPhysics(),
         child: Container(
           child: FutureBuilder(
-            future: getData(),
+            future: getData(), // TODO without reload
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final data = snapshot.data as Map<String, dynamic>;
-                // print(data);
 
                 return Column(
                   children: [
