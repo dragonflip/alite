@@ -33,7 +33,7 @@ class Chat extends StatelessWidget {
                           children: [
                             Text("Привіт", style: TextStyle(color: Colors.white, fontSize: 16)),
                             SizedBox(width: 8),
-                            Text("13:28", style: TextStyle(color: Colors.white54, fontSize: 12))
+                            Text("13:28", style: TextStyle(color: Colors.white70, fontSize: 12))
                           ],
                         ),
                       ),
@@ -73,7 +73,7 @@ class Chat extends StatelessWidget {
                           children: [
                             Text("Ремонтую інтернет після вітру", style: TextStyle(color: Colors.white, fontSize: 16)),
                             SizedBox(width: 8),
-                            Text("13:28", style: TextStyle(color: Colors.white54, fontSize: 12))
+                            Text("13:28", style: TextStyle(color: Colors.white70, fontSize: 12))
                           ],
                         ),
                       ),
