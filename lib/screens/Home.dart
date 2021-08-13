@@ -43,12 +43,12 @@ class _Home extends State<Home> {
     var internetInfo = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/internet/$internetID"), headers: {"KEY": "testAPI_KEY12"});
     var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes));
 
-    try {
-      var api = await http.post(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/msgs/list"), body: jsonEncode({"uid": _uid}), headers: {"KEY": "testAPI_KEY12"});
-      print(api.body);
-    } catch (e) {
-      print(e);
-    }
+    // var api = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/abon/tariffs"), headers: {"KEY": "testAPI_KEY12"});
+    //
+    // var data = jsonDecode(utf8.decode(api.bodyBytes));
+    // for (int i = 0; i < data.length; i++) {
+    //   print(data[i]);
+    // }
 
     return {"profile": profile, "services": services, "internet": internet};
   }
@@ -78,6 +78,7 @@ class _Home extends State<Home> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final data = snapshot.data as Map<String, dynamic>;
+                // print(snapshot.data.runtimeType);
 
                 return Column(
                   children: [

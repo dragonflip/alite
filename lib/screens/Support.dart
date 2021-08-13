@@ -1,14 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 import '../widgets/MyAppBar.dart';
 
-class Support extends StatelessWidget {
+class Support extends StatefulWidget {
+  @override
+  _Support createState() => _Support();
+}
+
+class _Support extends State<Support> {
+  var _uid;
+
+  Future getData() async {
+    final prefs = await SharedPreferences.getInstance();
+    _uid = prefs.getString("uid");
+
+    var api = await http.post(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/msgs/list"), body: jsonEncode({"uid": _uid}), headers: {"KEY": "testAPI_KEY12"});
+    print(jsonDecode(utf8.decode(api.bodyBytes)));
+
+    return jsonDecode(utf8.decode(api.bodyBytes));
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<String> titles = ['Не працює інтернет', 'Нестабільний інтернет', 'Невідповідність заявленої в тарифі швидкості', 'Тупить роутер'];
     List<String> messages = ['Перестав працювати інтернет після сильного вітру. Робіть щось з тим вітром, я за що гроші плачу', 'Не можу докачати фільм до кінця!!! Хочу дивитись фільми!!', 'Поясніть будь ласка, чому в тарифі заявлена швидкість 150 Мб/с, а в мене чомусь 65 Мб/c', 'Перезавантажте роутер, і не кіпішуйте. Будьте здорові!!'];
-    List<String> dates = ['12:17', '10:42', '10.07.2021', '23.03.2019'];
-    List<String> statuses = ['Відкрито', 'Відкрито', 'Відкрито', 'Закрито'];
+    List<String> statuses = ['Відкрито', 'Не виконано і закрито', 'Виконано і закрито', '?', '?', '?', 'Очікуємо Вашу відповідь'];
+    List<Color> statusColors = [Colors.blue, Colors.red, Colors.green, Colors.black, Colors.black, Colors.black, Colors.orange];
 
     return Scaffold(
       appBar: MyAppBar("Технічна підтримка"),
@@ -80,40 +100,51 @@ class Support extends StatelessWidget {
         tooltip: "Нове повідомлення в тех. підтримку",
       ),
       body: Container(
-        child: ListView.separated(
-          separatorBuilder: (_, index) => Divider(
-            height: 0,
-          ),
-          physics: BouncingScrollPhysics(),
+        child: FutureBuilder(
+          future: getData(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final data = (snapshot.data as List<dynamic>).reversed.toList();
 
-          itemCount: 4,
-          itemBuilder: (_, index) => ListTile(
-            onTap: () {
-              Navigator.pushNamed(context, "/chat", arguments: index);
-            },
-            title: Text(titles[index], maxLines: 1, overflow: TextOverflow.ellipsis),
-            subtitle: RichText(
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              return ListView.separated(
+                separatorBuilder: (_, index) => Divider(
+                  height: 0,
+                ),
+                physics: BouncingScrollPhysics(),
 
-              text: TextSpan(
-                style: TextStyle(color: Colors.black54),
-                children: [
-                  TextSpan(text: index == 3 ? "Відповідь: " : "Ви: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(text: messages[index]),
-                ]
-              )
-            ),
-            trailing: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(statuses[index], style: TextStyle(color: (statuses[index] == "Відкрито" ? Colors.green : Colors.red), fontSize: 12)),
-                Text(dates[index]),
-              ],
-            ),
-            isThreeLine: true,
-            tileColor: Colors.white,
-          ),
+                itemCount: data.length,
+                itemBuilder: (_, index) => ListTile(
+                  onTap: () {
+                    Navigator.pushNamed(context, "/chat", arguments: index);
+                  },
+                  title: Text(data[index]['subject'], maxLines: 1, overflow: TextOverflow.ellipsis),
+                  subtitle: RichText(
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+
+                    text: TextSpan(
+                      style: TextStyle(color: Colors.black54),
+                      children: [
+                        TextSpan(text: index == 3 ? "Відповідь: " : "Ви: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: messages[index]),
+                      ],
+                    ),
+                  ),
+                  trailing: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(statuses[int.parse(data[index]['stateId'])], style: TextStyle(color: statusColors[int.parse(data[index]['stateId'])], fontSize: 12)),
+                      Text(DateFormat("dd.MM.yyyy").format(DateTime.parse(data[index]['date']))),
+                    ],
+                  ),
+                  isThreeLine: true,
+                  tileColor: Colors.white,
+                ),
+              );
+            } else {
+              return LinearProgressIndicator();
+            }
+          },
         ),
       ),
     );

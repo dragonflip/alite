@@ -107,7 +107,7 @@ class _Login extends State<Login> {
         context: context,
         builder: (_) => AlertDialog(
           title: Text('Помилка'),
-          content: Text('Перевірте підключення до інтернету'),
+          content: Text('Перевірте підключення до Інтернету'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
