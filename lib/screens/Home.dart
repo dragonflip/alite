@@ -12,36 +12,33 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-  var _uid, _pib;
+  var _uid, _sid;
   var result;
 
   getData() async {
     final prefs = await SharedPreferences.getInstance();
     _uid = prefs.getString("uid");
+    _sid = prefs.getString("sid");
 
-    var overallInfo = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid'), headers: {"KEY": "testAPI_KEY12"});
-    var personalInfo = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid/pi'), headers: {"KEY": "testAPI_KEY12"});
+    var overallInfo = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/user/$_uid'), headers: {"USERSID": _sid});
+    var personalInfo = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/user/$_uid/pi'), headers: {"USERSID": _sid});
 
     var profile = jsonDecode(utf8.decode(personalInfo.bodyBytes));
     profile.addAll(jsonDecode(utf8.decode(overallInfo.bodyBytes)));
 
-    var servicesResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/abon"), headers: {"KEY": "testAPI_KEY12"});
+    var servicesResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/abon"), headers: {"KEY": "testAPI_KEY12"}); // TODO change to USERSID
     var servicesInfo = jsonDecode(utf8.decode(servicesResponse.bodyBytes));
 
     var services = [];
 
     for (int i = 0; i < servicesInfo.length; i++) {
       if (servicesInfo[i]['activeService'] == "1") {
-        // print(servicesInfo[i]);
         services.add(servicesInfo[i]);
       }
     }
 
-    var internetResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/internet"), headers: {"KEY": "testAPI_KEY12"});
-    var internetID = jsonDecode(utf8.decode(internetResponse.bodyBytes))[0]['id'];
-
-    var internetInfo = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/internet/$internetID"), headers: {"KEY": "testAPI_KEY12"});
-    var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes));
+    var internetInfo = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/user/$_uid/internet"), headers: {"USERSID": _sid});
+    var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes))[0]; // TODO multiple tariffs
 
     // var api = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/abon/tariffs"), headers: {"KEY": "testAPI_KEY12"});
     //
@@ -78,7 +75,6 @@ class _Home extends State<Home> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final data = snapshot.data as Map<String, dynamic>;
-                // print(snapshot.data.runtimeType);
 
                 return Column(
                   children: [
@@ -177,7 +173,6 @@ class _Home extends State<Home> {
                                 ),
                               ],
                             ),
-
                             ListTile(
                               title: Text("${data['internet']['speed']} Мб/с"),
                               subtitle: Text("Швидкість"),
@@ -185,7 +180,7 @@ class _Home extends State<Home> {
                             ),
                             Divider(),
                             ListTile(
-                              title: Text("${data['internet']['monthAbon']} грн", style: TextStyle(fontSize: 18)),
+                              title: Text("${data['internet']['monthFee']} грн", style: TextStyle(fontSize: 18)),
                               subtitle: Text("Ціна"),
                               leading: Icon(Icons.attach_money),
                             ),
@@ -212,11 +207,6 @@ class _Home extends State<Home> {
                                 ),
                               ],
                             ),
-                            // ListTile(
-                            //   title: Text("192.168.0.1"),
-                            //   subtitle: Text("Статичний IP"),
-                            //   leading: Icon(Icons.cable),
-                            // ),
                             // Divider(),
                             ListTile(
                               title: Text("${item['price']} грн", style: TextStyle(fontSize: 18)),

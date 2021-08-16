@@ -1,12 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/MyAppBar.dart';
 
-class Chat extends StatelessWidget {
+class SupportDialog extends StatefulWidget {
+  @override
+  _SupportDialog createState() => _SupportDialog();
+}
+
+class _SupportDialog extends State<SupportDialog> {
+  var _uid;
+
+  Future getData() async {
+    final prefs = await SharedPreferences.getInstance();
+    _uid = prefs.getString("uid");
+
+    var api = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/msgs/186255"), headers: {"KEY": "testAPI_KEY12"});
+    print(utf8.decode(api.bodyBytes));
+
+    return jsonDecode(utf8.decode(api.bodyBytes));
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> titles = ['Не працює інтернет', 'Нестабільний інтернет', 'Невідповідність заявленої в тарифі швидкості', 'Тупить роутер'];
-    List<String> statuses = ['Відкрито', 'Відкрито', 'Відкрито', 'Закрито'];
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -20,6 +39,16 @@ class Chat extends StatelessWidget {
                 physics: BouncingScrollPhysics(),
                 children: [
                   Chip(label: Text("12.07.2021")),
+                  FutureBuilder(
+                    future: getData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text("asd");
+                      } else {
+                        return LinearProgressIndicator();
+                      }
+                    },
+                  ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: Card(

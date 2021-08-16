@@ -13,19 +13,20 @@ class Profile extends StatefulWidget {
 }
 
 class _Profile extends State<Profile> {
-  var _edit_phone = false;
-  var _edit_email = false;
+  var _editPhone = false;
+  var _editEmail = false;
   final _focusNode = FocusNode();
 
-  var _uid, _login;
+  var _uid, _sid, _login;
   var result;
 
   getData() async {
     final prefs = await SharedPreferences.getInstance();
     _uid = prefs.getString("uid");
+    _sid = prefs.getString("sid");
     _login = prefs.getString("login");
 
-    var profile = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid/pi'), headers: {"KEY": "testAPI_KEY12"});
+    var profile = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/user/$_uid/pi'), headers: {"USERSID": _sid});
 
     return jsonDecode(utf8.decode(profile.bodyBytes));
   }
@@ -48,7 +49,6 @@ class _Profile extends State<Profile> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final data = snapshot.data as Map<String, dynamic>;
-                print(data);
 
                 return Card(
                   margin: EdgeInsets.all(8),
@@ -90,7 +90,7 @@ class _Profile extends State<Profile> {
                           leading: Icon(Icons.assignment_ind),
                         ),
                         ListTile(
-                          title: _edit_phone ? TextFormField(
+                          title: _editPhone ? TextFormField(
                             initialValue: "${data['phone'][0]}",
                             cursorHeight: 22,
                             focusNode: _focusNode,
@@ -105,12 +105,12 @@ class _Profile extends State<Profile> {
                           trailing: IconButton(
                             onPressed: () {
                               setState(() {
-                                _edit_phone = !_edit_phone;
+                                _editPhone = !_editPhone;
                                 _focusNode.requestFocus();
                               });
                             },
-                            icon: !_edit_phone ? Icon(Icons.edit) : Icon(Icons.check, color: Colors.red),
-                            tooltip: !_edit_phone ? "Редагувати телефон" : "Зберегти зміни",
+                            icon: !_editPhone ? Icon(Icons.edit) : Icon(Icons.check, color: Colors.red),
+                            tooltip: !_editPhone ? "Редагувати телефон" : "Зберегти зміни",
                           ),
                         ),
                         ListTile(
@@ -119,7 +119,7 @@ class _Profile extends State<Profile> {
                           leading: Icon(Icons.home),
                         ),
                         ListTile(
-                          title: _edit_email ? TextFormField(
+                          title: _editEmail ? TextFormField(
                             initialValue: "${data['email'][0]}",
                             cursorHeight: 22,
                             focusNode: _focusNode,
@@ -134,12 +134,12 @@ class _Profile extends State<Profile> {
                           trailing: IconButton(
                             onPressed: () {
                               setState(() {
-                                _edit_email = !_edit_email;
+                                _editEmail = !_editEmail;
                                 _focusNode.requestFocus();
                               });
                             },
-                            icon: !_edit_email ? Icon(Icons.edit) : Icon(Icons.check, color: Colors.red),
-                            tooltip: !_edit_email ? "Редагувати електронну пошту" : "Зберегти зміни",
+                            icon: !_editEmail ? Icon(Icons.edit) : Icon(Icons.check, color: Colors.red),
+                            tooltip: !_editEmail ? "Редагувати електронну пошту" : "Зберегти зміни",
                           ),
                         ),
                         ListTile(

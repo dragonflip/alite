@@ -41,8 +41,8 @@ class _Login extends State<Login> {
 
         if (jsonDecode(response.body)['uid'] != 0) {
           final prefs = await SharedPreferences.getInstance();
-          prefs.setString("sid", jsonDecode(response.body)['sid'].toString());
           prefs.setString("uid", jsonDecode(response.body)['uid'].toString());
+          prefs.setString("sid", jsonDecode(response.body)['sid'].toString());
 
           prefs.setString("login", _login);
           prefs.setString("password", _password);

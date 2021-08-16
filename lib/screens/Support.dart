@@ -19,7 +19,7 @@ class _Support extends State<Support> {
     _uid = prefs.getString("uid");
 
     var api = await http.post(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/msgs/list"), body: jsonEncode({"uid": _uid}), headers: {"KEY": "testAPI_KEY12"});
-    print(jsonDecode(utf8.decode(api.bodyBytes)));
+    // print(jsonDecode(utf8.decode(api.bodyBytes)));
 
     return jsonDecode(utf8.decode(api.bodyBytes));
   }
@@ -115,7 +115,7 @@ class _Support extends State<Support> {
                 itemCount: data.length,
                 itemBuilder: (_, index) => ListTile(
                   onTap: () {
-                    Navigator.pushNamed(context, "/chat", arguments: index);
+                    Navigator.pushNamed(context, "/support_dialog", arguments: index);
                   },
                   title: Text(data[index]['subject'], maxLines: 1, overflow: TextOverflow.ellipsis),
                   subtitle: RichText(
