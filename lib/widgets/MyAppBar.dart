@@ -14,7 +14,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         text: TextSpan(
           style: TextStyle(fontSize: 26),
           children: [
-            TextSpan(text: "A", style: TextStyle(color: Colors.red)),
+            TextSpan(text: "A", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
             TextSpan(text: "BillS", style: TextStyle(color: Colors.black54)),
           ]
         ),

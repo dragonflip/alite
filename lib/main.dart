@@ -5,14 +5,13 @@ import 'screens/Tariff.dart';
 import 'screens/Profile.dart';
 import 'screens/More.dart';
 
+import 'screens/Login.dart';
 import 'screens/Notifications.dart';
 import 'screens/Support.dart';
 import 'screens/SupportDialog.dart';
 import 'screens/Pay.dart';
 import 'screens/About.dart';
 import 'screens/Settings.dart';
-
-import 'screens/Login.dart';
 
 void main() => runApp(MyApp());
 
@@ -40,14 +39,13 @@ class MyApp extends StatelessWidget {
         '/profile': (context) => Profile(),
         '/more': (context) => More(),
 
+        '/login': (context) => Login(),
         '/notifications': (context) => Notifications(),
         '/support': (context) => Support(),
         '/support_dialog': (context) => SupportDialog(),
         '/pay': (context) => Pay(),
         '/about': (context) => About(),
         '/settings': (context) => Settings(),
-
-        '/login': (context) => Login(),
       }
     );
   }

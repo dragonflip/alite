@@ -13,7 +13,6 @@ class Home extends StatefulWidget {
 
 class _Home extends State<Home> {
   var _uid, _sid;
-  var result;
 
   getData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -26,7 +25,7 @@ class _Home extends State<Home> {
     var profile = jsonDecode(utf8.decode(personalInfo.bodyBytes));
     profile.addAll(jsonDecode(utf8.decode(overallInfo.bodyBytes)));
 
-    var servicesResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/abon"), headers: {"KEY": "testAPI_KEY12"}); // TODO change to USERSID
+    var servicesResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/abon"), headers: {"KEY": "testAPI_KEY12"}); // TODO change to user API
     var servicesInfo = jsonDecode(utf8.decode(servicesResponse.bodyBytes));
 
     var services = [];
@@ -40,6 +39,8 @@ class _Home extends State<Home> {
     var internetInfo = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/user/$_uid/internet"), headers: {"USERSID": _sid});
     var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes))[0]; // TODO multiple tariffs
 
+    prefs.setString("tpId", internet['id']);
+
     // var api = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/abon/tariffs"), headers: {"KEY": "testAPI_KEY12"});
     //
     // var data = jsonDecode(utf8.decode(api.bodyBytes));
@@ -52,7 +53,7 @@ class _Home extends State<Home> {
 
   @override
   void initState() {
-    result = getData();
+    // result = getData();
     super.initState();
   }
 

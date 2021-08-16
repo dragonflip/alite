@@ -100,6 +100,7 @@ class _Pay extends State<Pay> {
                         labelText: "Сума",
                         border: OutlineInputBorder(),
                         counterText: "",
+                        helperText: "Оплата за 1, 3 або 6 місяців:",
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
