@@ -7,12 +7,12 @@ import 'dart:convert';
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
 
-class Tariff extends StatefulWidget {
+class Tariffs extends StatefulWidget {
   @override
-  _Tariff createState() => _Tariff();
+  _Tariffs createState() => _Tariffs();
 }
 
-class _Tariff extends State<Tariff> {
+class _Tariffs extends State<Tariffs> {
   var _uid, _sid, _tpId;
 
   getData() async {
@@ -91,7 +91,48 @@ class _Tariff extends State<Tariff> {
                               elevation: 0,
                             ),
                           ) : TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: Text('Призупинити тариф'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextField(
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          labelText: "Зупинити з - по",
+                                          hintText: "Оберіть діапазон дати",
+                                          suffixIcon: Icon(Icons.calendar_today),
+                                        ),
+                                        readOnly: true,
+                                        showCursor: true,
+                                        onTap: () {
+                                          showDateRangePicker(
+                                            context: context,
+                                            firstDate: DateTime(2021),
+                                            lastDate: DateTime(2022),
+                                            initialDateRange: DateTimeRange(start: DateTime.now(), end: DateTime.now()),
+                                            initialEntryMode: DatePickerEntryMode.input,
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text("ПРИЗУПИНИТИ"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                             child: Text("ПРИЗУПИНИТИ"),
                           ),
                         ),

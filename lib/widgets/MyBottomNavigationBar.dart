@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
-  final Map<String, int> routes = {"/": 0, "/tariff": 1, "/profile": 2, "/more": 3};
-  final List<String> screens = ['/', '/tariff', '/profile', '/more'];
+  final Map<String, int> routes = {"/": 0, "/tariffs": 1, "/profile": 2, "/more": 3};
+  final List<String> screens = ['/', '/tariffs', '/profile', '/more'];
 
   @override
   Widget build(BuildContext context) {

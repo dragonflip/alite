@@ -8,13 +8,16 @@ import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
 
 class More extends StatelessWidget {
-  var version;
-
   Future _getAppInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    version = packageInfo.version;
 
-    return version;
+    print(packageInfo.appName);
+    print(packageInfo.packageName);
+    print(packageInfo.version);
+    print(packageInfo.buildNumber);
+    print(packageInfo.buildSignature);
+
+    return packageInfo.version;
   }
 
   @override
@@ -84,22 +87,25 @@ class More extends StatelessWidget {
                   trailing: Icon(Icons.keyboard_arrow_right, color: Colors.red),
                 ),
                 Divider(),
-                ListTile(
-                  onLongPress: () {
-                    Clipboard.setData(ClipboardData(text: "ABillS lite, версія $version"));
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Інформацію про версію скопійовано")));
-                  },
-                  title: FutureBuilder(
-                    future: _getAppInfo(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Text("Версія ${snapshot.data.toString()}");
-                      } else {
-                        return Text("Версія");
-                      }
+
+                FutureBuilder(
+                  future: _getAppInfo(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final data = snapshot.data;
+
+                      return ListTile(
+                        onLongPress: () {
+                          Clipboard.setData(ClipboardData(text: "ABillS lite, версія $data"));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Інформацію про версію скопійовано")));
+                        },
+                        title: Text("Версія $data"),
+                        leading: Icon(Icons.code),
+                      );
+                    } else {
+                      return LinearProgressIndicator();
                     }
-                  ),
-                  leading: Icon(Icons.code),
+                  },
                 ),
               ],
             ),

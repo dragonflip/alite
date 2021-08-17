@@ -29,15 +29,14 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       iconTheme: IconThemeData(color: Colors.black54),
 
       actions: [
-        this.title == "ABillS"
-        ? IconButton(
+        this.title == "ABillS" ? IconButton(
           onPressed: () {
             Navigator.pushNamed(context, "/notifications");
           },
           icon: Icon(Icons.notifications),
           tooltip: "Сповіщення",
-        )
-        : Text(""),
+        ) : Wrap(),
+        SizedBox(width: 4),
       ],
     );
   }

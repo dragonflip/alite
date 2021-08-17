@@ -158,7 +158,7 @@ class _Home extends State<Home> {
                             // Slider(
                             //   value: 0.25,
                             //   onChanged: (value) {
-                            //     Navigator.pushNamed(context, "/tariff");
+                            //     Navigator.pushNamed(context, "/tariffs");
                             //   },
                             //   divisions: 4,
                             // ),
@@ -167,7 +167,7 @@ class _Home extends State<Home> {
                               children: [
                                 OutlinedButton.icon(
                                   onPressed: () {
-                                    Navigator.pushNamed(context, "/tariff", arguments: "change_tariff");
+                                    Navigator.pushNamed(context, "/tariffs", arguments: "change_tariff");
                                   },
                                   icon: Icon(Icons.swap_horiz),
                                   label: Text("ЗМІНИТИ"),

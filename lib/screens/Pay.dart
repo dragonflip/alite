@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,20 +10,9 @@ class Pay extends StatefulWidget {
 }
 
 class _Pay extends State<Pay> {
-  var _amount = "${(290 - 123.50).toStringAsFixed(2)}";
-  var _loading = true;
-
   final _focusNode = FocusNode();
 
-  @override
-  void initState() {
-    super.initState();
-    Timer(Duration(milliseconds: 2000), () {
-      setState(() {
-        _loading = false;
-      });
-    });
-  }
+  var _amount = "${(290 - 123.50).toStringAsFixed(2)}";
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +22,6 @@ class _Pay extends State<Pay> {
         child: ListView(
           physics: BouncingScrollPhysics(),
           children: [
-            if (_loading) LinearProgressIndicator(),
             Card(
               margin: EdgeInsets.all(8),
               child: Padding(

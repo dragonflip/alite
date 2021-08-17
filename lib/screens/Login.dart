@@ -142,8 +142,8 @@ class _Login extends State<Login> {
 
   @override
   void initState() {
-    super.initState();
     getData();
+    super.initState();
   }
 
   @override

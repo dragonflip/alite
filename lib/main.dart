@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'screens/Home.dart';
-import 'screens/Tariff.dart';
+import 'screens/Tariffs.dart';
 import 'screens/Profile.dart';
 import 'screens/More.dart';
 
@@ -31,11 +32,20 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('uk', ''),
+      ],
+
       // TODO checkLogin
       initialRoute: '/login',
       routes: {
         '/': (context) => Home(),
-        '/tariff': (context) => Tariff(),
+        '/tariffs': (context) => Tariffs(),
         '/profile': (context) => Profile(),
         '/more': (context) => More(),
 
@@ -46,7 +56,7 @@ class MyApp extends StatelessWidget {
         '/pay': (context) => Pay(),
         '/about': (context) => About(),
         '/settings': (context) => Settings(),
-      }
+      },
     );
   }
 }

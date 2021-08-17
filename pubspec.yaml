@@ -3,7 +3,7 @@ description: ABillS Lite
 
 publish_to: 'none'
 
-version: 0.7.0
+version: 0.7.10
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -11,6 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
   http:
   shared_preferences:
   url_launcher:

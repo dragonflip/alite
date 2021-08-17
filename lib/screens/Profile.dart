@@ -18,7 +18,6 @@ class _Profile extends State<Profile> {
   final _focusNode = FocusNode();
 
   var _uid, _sid, _login;
-  var result;
 
   getData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -32,12 +31,6 @@ class _Profile extends State<Profile> {
   }
 
   @override
-  void initState() {
-    result = getData();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(),
@@ -45,7 +38,7 @@ class _Profile extends State<Profile> {
         physics: BouncingScrollPhysics(),
         child: Container(
           child: FutureBuilder(
-            future: result,
+            future: getData(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final data = snapshot.data as Map<String, dynamic>;
@@ -99,11 +92,27 @@ class _Profile extends State<Profile> {
                               isDense: true,
                               contentPadding: EdgeInsets.symmetric(vertical: 1),
                             ),
+
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Введіть телефон";
+                              }
+
+                              data['phone'][0] = value;
+                            },
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                           ) : Text("${data['phone'][0]}"),
                           subtitle: Text("Телефон"),
                           leading: Icon(Icons.phone),
                           trailing: IconButton(
-                            onPressed: () {
+                            onPressed: () async {
+                              try {
+                                var res = await http.put(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid/pi'), body: jsonEncode({"phone": data['phone'][0]}), headers: {"KEY": "testAPI_KEY12"});
+                                print(res.body);
+                              } catch (e) {
+                                print(e);
+                              }
+
                               setState(() {
                                 _editPhone = !_editPhone;
                                 _focusNode.requestFocus();
@@ -114,7 +123,7 @@ class _Profile extends State<Profile> {
                           ),
                         ),
                         ListTile(
-                          title: Text("${data['addressFull'].toString().trim()}"),
+                          title: Text("${data['addressFull'].trim()}"),
                           subtitle: Text("Адреса"),
                           leading: Icon(Icons.home),
                         ),
