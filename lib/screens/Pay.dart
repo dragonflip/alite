@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '../widgets/MyAppBar.dart';
 
@@ -10,304 +13,336 @@ class Pay extends StatefulWidget {
 }
 
 class _Pay extends State<Pay> {
+  var futureData;
+
   final _focusNode = FocusNode();
 
+  var _uid, _sid;
+
   var _amount = "${(290 - 123.50).toStringAsFixed(2)}";
+
+  Future getData() async {
+    final prefs = await SharedPreferences.getInstance();
+    _uid = prefs.getString("uid");
+    _sid = prefs.getString("sid");
+
+    var overallResponse = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/user/$_uid'), headers: {"USERSID": _sid});
+    var overallInfo = jsonDecode(utf8.decode(overallResponse.bodyBytes));
+
+    var deposit = double.parse(overallInfo['deposit']);
+
+    if (deposit >= 123.50) {
+      _amount = "290.00";
+    } else {
+      _amount = (deposit - 123.50).toStringAsFixed(2);
+    }
+
+    return overallInfo;
+  }
+
+  @override
+  void initState() {
+    futureData = getData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar("Поповнити"),
       body: Container(
-        child: ListView(
-          physics: BouncingScrollPhysics(),
-          children: [
-            Card(
-              margin: EdgeInsets.all(8),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: Text("Мій баланс", style: TextStyle(fontSize: 18)),
-                      leading: Icon(Icons.account_balance_wallet, color: Colors.red),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.end,
+        child: FutureBuilder(
+          future: futureData,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var data = snapshot.data as Map<String, dynamic>;
+
+              return ListView(
+                physics: BouncingScrollPhysics(),
+                children: [
+                  Card(
+                    margin: EdgeInsets.all(8),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                      child: Column(
                         children: [
-                          Text("123.50", style: TextStyle(fontSize: 20, color: Colors.green)),
-                          Text(" грн", style: TextStyle(fontSize: 14, color: Colors.green)),
+                          ListTile(
+                            title: Text("Мій баланс", style: TextStyle(fontSize: 18)),
+                            leading: Icon(Icons.account_balance_wallet, color: Colors.red),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(double.parse(data['deposit']).toStringAsFixed(2), style: TextStyle(fontSize: 20, color: Colors.green)),
+                                Text(" грн", style: TextStyle(fontSize: 14, color: Colors.green)),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          ListTile(
+                            title: Text("Вартість послуг", style: TextStyle(fontSize: 18)),
+                            leading: Icon(Icons.assessment),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text("290.00", style: TextStyle(fontSize: 20)),
+                                Text(" грн", style: TextStyle(fontSize: 14)),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          ListTile(
+                            title: Text("Кредит", style: TextStyle(fontSize: 18)),
+                            leading: Icon(Icons.account_balance),
+                            trailing: double.parse(data['credit']) > 0 ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(double.parse(data['credit']).toStringAsFixed(2), style: TextStyle(fontSize: 20)),
+                                Text(" грн", style: TextStyle(fontSize: 14)),
+                              ],
+                            ) : OutlinedButton(
+                              onPressed: () {},
+                              child: Text("ОТРИМАТИ"),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 8),
-                    ListTile(
-                      title: Text("Вартість послуг", style: TextStyle(fontSize: 18)),
-                      leading: Icon(Icons.assessment),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                  ),
+                  Card(
+                    margin: EdgeInsets.all(8),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("290", style: TextStyle(fontSize: 20)),
-                          Text(" грн", style: TextStyle(fontSize: 14)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.all(8),
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Введіть суму поповнення:", style: TextStyle(fontSize: 22)),
-                    SizedBox(height: 8),
-                    TextFormField(
-                      cursorHeight: 22,
-                      focusNode: _focusNode,
-                      onChanged: (value) {
-                        setState(() {
-                          _amount = value.isNotEmpty ? value : "0";
-                        });
-                      },
+                          Text("Введіть суму поповнення:", style: TextStyle(fontSize: 22)),
+                          SizedBox(height: 8),
+                          TextFormField(
+                            cursorHeight: 22,
+                            focusNode: _focusNode,
+                            onChanged: (value) {
+                              setState(() {
+                                _amount = value.isNotEmpty ? value : "0";
+                              });
+                            },
 
-                      initialValue: "$_amount",
-                      key: Key("amount_$_amount"),
+                            initialValue: "$_amount",
+                            key: Key("amount_$_amount"),
 
-                      keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$'))],
-                      maxLength: 6,
+                            keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$'))],
+                            maxLength: 6,
 
-                      decoration: InputDecoration(
-                        labelText: "Сума",
-                        border: OutlineInputBorder(),
-                        counterText: "",
-                        helperText: "Оплата за 1, 3 або 6 місяців:",
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Введіть суму поповнення";
-                        }
-                      },
-                    ),
-                    Row(
-                      children: [
-                        ActionChip(
-                          onPressed: () {
-                            setState(() {
-                              _amount = "${(290).toStringAsFixed(2)}";
-                            });
-                          },
-                          label: Text("${(290).toStringAsFixed(2)}"),
-                          avatar: Icon(Icons.looks_one, color: Colors.red),
-                          tooltip: "Сума поповнення на 1 місяць",
-                        ),
-                        SizedBox(width: 8),
-                        ActionChip(
-                          onPressed: () {
-                            setState(() {
-                              _amount = "${(290 * 3).toStringAsFixed(2)}";
-                            });
-                          },
-                          label: Text("${(290 * 3).toStringAsFixed(2)}"),
-                          avatar: Icon(Icons.looks_3, color: Colors.red),
-                          tooltip: "Сума поповнення на 3 місяці",
-                        ),
-                        SizedBox(width: 8),
-                        ActionChip(
-                          onPressed: () {
-                            setState(() {
-                              _amount = "${(290 * 6).toStringAsFixed(2)}";
-                            });
-                          },
-                          label: Text("${(290 * 6).toStringAsFixed(2)}"),
-                          avatar: Icon(Icons.looks_6, color: Colors.red),
-                          tooltip: "Сума поповнення на 6 місяців",
-                        ),
-                      ],
-                    ),
-                    Divider(height: 32),
-
-                    Text("Оплатити за допомогою:", style: TextStyle(fontSize: 22)),
-                    SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_amount != "0") {
-                          launch("https://next.privat24.ua/money-transfer/card");
-                        } else {
-                          _focusNode.requestFocus();
-                        }
-                      },
-                      child: ListTile(
-                        title: Text("Privat24"),
-                        subtitle: Text("Сума до сплати"),
-                        leading: Center(
-                          widthFactor: 1,
-                          child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Privat24_Logo.png/150px-Privat24_Logo.png.png", width: 50),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text("$_amount", style: TextStyle(fontSize: 20)),
-                            Text(" грн", style: TextStyle(fontSize: 14)),
-                          ],
-                        ),
-                        isThreeLine: true,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Colors.red[200],
-                        padding: EdgeInsets.zero
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (_amount != "0") {
-                          var url = "https://www.liqpay.ua/uk/checkout/card/380660068608";
-                          await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
-                        } else {
-                          // TODO _focusNode.unfocus();
-                          _focusNode.requestFocus();
-                        }
-                      },
-                      child: ListTile(
-                        title: Text("LiqPay"),
-                        subtitle: Text("Сума до сплати"),
-                        leading: Center(
-                          widthFactor: 1,
-                          child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/LIQPAY.svg/150px-LIQPAY.svg.png", width: 50),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text("$_amount", style: TextStyle(fontSize: 20)),
-                            Text(" грн", style: TextStyle(fontSize: 14)),
-                          ],
-                        ),
-                        isThreeLine: true,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Colors.red[200],
-                        padding: EdgeInsets.zero
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_amount != "0") {
-                          launch("https://easypay.ua/ua/moneytransfer");
-                        } else {
-                          _focusNode.requestFocus();
-                        }
-                      },
-                      child: ListTile(
-                        title: Text("EasyPay"),
-                        subtitle: Text("Сума до сплати"),
-                        leading: Center(
-                          widthFactor: 1,
-                          child: Image.network("https://static.openfintech.io/payment_methods/easypay/icon.png?w=278&c=v0.59.26", width: 50),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text("$_amount", style: TextStyle(fontSize: 20)),
-                            Text(" грн", style: TextStyle(fontSize: 14)),
-                          ],
-                        ),
-                        isThreeLine: true,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Colors.red[200],
-                        padding: EdgeInsets.zero
-                      ),
-                    ),
-                    SizedBox(height: 8),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: Text('Оформити кредит?'),
-                            content: Text('Вам буде надано кредит до 15.08.2021.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
+                            decoration: InputDecoration(
+                              labelText: "Сума",
+                              border: OutlineInputBorder(),
+                              counterText: "",
+                              helperText: "Оплата за 1, 3 або 6 місяців:",
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Введіть суму поповнення";
+                              }
+                            },
+                          ),
+                          Row(
+                            children: [
+                              ActionChip(
+                                onPressed: () {
+                                  setState(() {
+                                    _amount = "${(290).toStringAsFixed(2)}";
+                                  });
+                                },
+                                label: Text("${(290).toStringAsFixed(2)}"),
+                                avatar: Icon(Icons.looks_one, color: Colors.red),
+                                tooltip: "Сума поповнення на 1 місяць",
+                                backgroundColor: Colors.grey[200],
                               ),
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text("ОФОРМИТИ"),
+                              SizedBox(width: 8),
+                              ActionChip(
+                                onPressed: () {
+                                  setState(() {
+                                    _amount = "${(290 * 3).toStringAsFixed(2)}";
+                                  });
+                                },
+                                label: Text("${(290 * 3).toStringAsFixed(2)}"),
+                                avatar: Icon(Icons.looks_3, color: Colors.red),
+                                tooltip: "Сума поповнення на 3 місяці",
+                                backgroundColor: Colors.grey[200],
+                              ),
+                              SizedBox(width: 8),
+                              ActionChip(
+                                onPressed: () {
+                                  setState(() {
+                                    _amount = "${(290 * 6).toStringAsFixed(2)}";
+                                  });
+                                },
+                                label: Text("${(290 * 6).toStringAsFixed(2)}"),
+                                avatar: Icon(Icons.looks_6, color: Colors.red),
+                                tooltip: "Сума поповнення на 6 місяців",
+                                backgroundColor: Colors.grey[200],
                               ),
                             ],
                           ),
-                        );
-                      },
-                      child: ListTile(
-                        title: Text("Кредит"),
-                        subtitle: Text("Оформлення кредиту"),
-                        leading: Center(
-                          widthFactor: 1,
-                          child: Image.network("https://cdn.iconscout.com/icon/free/png-256/credit-card-1454538-1228446.png", width: 50),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text("$_amount", style: TextStyle(fontSize: 20)),
-                            Text(" грн", style: TextStyle(fontSize: 14)),
-                          ],
-                        ),
-                        isThreeLine: true,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Colors.red[200],
-                        padding: EdgeInsets.zero
+                          Divider(height: 32),
+
+                          Text("Оплатити за допомогою:", style: TextStyle(fontSize: 22)),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (_amount != "0") {
+                                launch("https://next.privat24.ua/money-transfer/card");
+                              } else {
+                                _focusNode.requestFocus();
+                              }
+                            },
+                            child: ListTile(
+                              title: Text("Privat24"),
+                              subtitle: Text("Сума до сплати"),
+                              leading: Center(
+                                widthFactor: 1,
+                                child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Privat24_Logo.png/150px-Privat24_Logo.png.png", width: 50),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text("$_amount", style: TextStyle(fontSize: 20)),
+                                  Text(" грн", style: TextStyle(fontSize: 14)),
+                                ],
+                              ),
+                              isThreeLine: true,
+                            ),
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.white,
+                                onPrimary: Colors.red[200],
+                                padding: EdgeInsets.zero
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () async {
+                              if (_amount != "0") {
+                                var url = "https://www.liqpay.ua/uk/checkout/card/380660068608";
+                                await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+                              } else {
+                                // TODO _focusNode.unfocus();
+                                _focusNode.requestFocus();
+                              }
+                            },
+                            child: ListTile(
+                              title: Text("LiqPay"),
+                              subtitle: Text("Сума до сплати"),
+                              leading: Center(
+                                widthFactor: 1,
+                                child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/LIQPAY.svg/150px-LIQPAY.svg.png", width: 50),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text("$_amount", style: TextStyle(fontSize: 20)),
+                                  Text(" грн", style: TextStyle(fontSize: 14)),
+                                ],
+                              ),
+                              isThreeLine: true,
+                            ),
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.white,
+                                onPrimary: Colors.red[200],
+                                padding: EdgeInsets.zero
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (_amount != "0") {
+                                launch("https://easypay.ua/ua/moneytransfer");
+                              } else {
+                                _focusNode.requestFocus();
+                              }
+                            },
+                            child: ListTile(
+                              title: Text("EasyPay"),
+                              subtitle: Text("Сума до сплати"),
+                              leading: Center(
+                                widthFactor: 1,
+                                child: Image.network("https://static.openfintech.io/payment_methods/easypay/icon.png?w=278&c=v0.59.26", width: 50),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text("$_amount", style: TextStyle(fontSize: 20)),
+                                  Text(" грн", style: TextStyle(fontSize: 14)),
+                                ],
+                              ),
+                              isThreeLine: true,
+                            ),
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.white,
+                                onPrimary: Colors.red[200],
+                                padding: EdgeInsets.zero
+                            ),
+                          ),
+                          SizedBox(height: 8),
+
+                          // ElevatedButton(
+                          //   onPressed: () {
+                          //     showDialog(
+                          //       context: context,
+                          //       builder: (_) => AlertDialog(
+                          //         title: Text('Оформити кредит?'),
+                          //         content: Text('Вам буде надано кредит до 15.08.2021.'),
+                          //         actions: [
+                          //           TextButton(
+                          //             onPressed: () => Navigator.pop(context),
+                          //             child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
+                          //           ),
+                          //           TextButton(
+                          //             onPressed: () => Navigator.pop(context),
+                          //             child: Text("ОФОРМИТИ"),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //     );
+                          //   },
+                          //   child: ListTile(
+                          //     title: Text("Кредит"),
+                          //     subtitle: Text("Оформлення кредиту"),
+                          //     leading: Center(
+                          //       widthFactor: 1,
+                          //       child: Image.network("https://cdn.iconscout.com/icon/free/png-256/credit-card-1454538-1228446.png", width: 50),
+                          //     ),
+                          //     trailing: Row(
+                          //       mainAxisSize: MainAxisSize.min,
+                          //       crossAxisAlignment: CrossAxisAlignment.end,
+                          //       children: [
+                          //         Text("$_amount", style: TextStyle(fontSize: 20)),
+                          //         Text(" грн", style: TextStyle(fontSize: 14)),
+                          //       ],
+                          //     ),
+                          //     isThreeLine: true,
+                          //   ),
+                          //   style: ElevatedButton.styleFrom(
+                          //     primary: Colors.white,
+                          //     onPrimary: Colors.red[200],
+                          //     padding: EdgeInsets.zero,
+                          //   ),
+                          // ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            // Card(
-            //   margin: EdgeInsets.all(8),
-            //   child: Padding(
-            //     padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-            //     child: Column(
-            //       children: [
-            //         ListTile(
-            //           title: Text("Оформити кредит", style: TextStyle(fontSize: 18)),
-            //           leading: Icon(Icons.account_balance),
-            //           trailing: OutlinedButton(
-            //             onPressed: () {},
-            //             child: Text("КРЕДИТ"),
-            //           ),
-            //         ),
-            //         // ListTile(
-            //         //   title: ElevatedButton(
-            //         //     onPressed: () {},
-            //         //     child: Text("КРЕДИТ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, letterSpacing: 1.5)),
-            //         //     style: ElevatedButton.styleFrom(
-            //         //       fixedSize: Size(MediaQuery.of(context).size.width - 16 * 3, 55),
-            //         //     ),
-            //         //   ),
-            //         // ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-          ],
+                  ),
+                ],
+              );
+            } else {
+              return LinearProgressIndicator();
+            }
+          }
         ),
       ),
     );

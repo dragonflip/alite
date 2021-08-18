@@ -43,13 +43,6 @@ class _Home extends State<Home> {
 
     prefs.setString("tpId", internet['id']);
 
-    // var api = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/abon/tariffs"), headers: {"KEY": "testAPI_KEY12"});
-    //
-    // var data = jsonDecode(utf8.decode(api.bodyBytes));
-    // for (int i = 0; i < data.length; i++) {
-    //   print(data[i]);
-    // }
-
     return {"profile": profile, "services": services, "internet": internet};
   }
 

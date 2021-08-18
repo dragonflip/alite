@@ -51,14 +51,8 @@ class _Tariffs extends State<Tariffs> {
             if (snapshot.hasData) {
               final data = snapshot.data as List<dynamic>;
 
-              final scrollController = ScrollController();
-              if (ModalRoute.of(context)?.settings.arguments.toString() != "change_tariff") {
-                Timer(Duration(milliseconds: 1000), () => scrollController.animateTo(255, duration: Duration(milliseconds: 1000), curve: Curves.ease));
-              }
-
               return ListView.builder(
                 itemCount: data.length,
-                controller: scrollController,
                 physics: BouncingScrollPhysics(),
 
                 itemBuilder: (_, index) => Card(
