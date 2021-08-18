@@ -13,9 +13,11 @@ class Tariffs extends StatefulWidget {
 }
 
 class _Tariffs extends State<Tariffs> {
+  var futureData;
+
   var _uid, _sid, _tpId;
 
-  getData() async {
+  Future getData() async {
     final prefs = await SharedPreferences.getInstance();
     _uid = prefs.getString("uid");
     _sid = prefs.getString("sid");
@@ -33,12 +35,18 @@ class _Tariffs extends State<Tariffs> {
   }
 
   @override
+  void initState() {
+    futureData = getData();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(),
       body: Container(
         child: FutureBuilder(
-          future: getData(),
+          future: futureData,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final data = snapshot.data as List<dynamic>;

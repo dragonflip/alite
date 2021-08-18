@@ -11,16 +11,24 @@ class SupportDialog extends StatefulWidget {
 }
 
 class _SupportDialog extends State<SupportDialog> {
+  var futureData;
+
   var _uid;
 
   Future getData() async {
     final prefs = await SharedPreferences.getInstance();
     _uid = prefs.getString("uid");
 
-    var api = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/msgs/186255"), headers: {"KEY": "testAPI_KEY12"});
-    print(utf8.decode(api.bodyBytes));
+    var messages = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/msgs/186255"), headers: {"KEY": "testAPI_KEY12"});
+    print(utf8.decode(messages.bodyBytes));
 
-    return jsonDecode(utf8.decode(api.bodyBytes));
+    return jsonDecode(utf8.decode(messages.bodyBytes));
+  }
+
+  @override
+  void initState() {
+    futureData = getData();
+    super.initState();
   }
 
   @override
@@ -40,7 +48,7 @@ class _SupportDialog extends State<SupportDialog> {
                 children: [
                   Chip(label: Text("12.07.2021")),
                   FutureBuilder(
-                    future: getData(),
+                    future: futureData,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Text("asd");

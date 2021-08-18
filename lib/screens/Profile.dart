@@ -13,13 +13,15 @@ class Profile extends StatefulWidget {
 }
 
 class _Profile extends State<Profile> {
+  var futureData;
+
   var _editPhone = false;
   var _editEmail = false;
   final _focusNode = FocusNode();
 
   var _uid, _sid, _login;
 
-  getData() async {
+  Future getData() async {
     final prefs = await SharedPreferences.getInstance();
     _uid = prefs.getString("uid");
     _sid = prefs.getString("sid");
@@ -31,14 +33,20 @@ class _Profile extends State<Profile> {
   }
 
   @override
+  void initState() {
+    futureData = getData();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         child: Container(
           child: FutureBuilder(
-            future: getData(),
+            future: futureData,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final data = snapshot.data as Map<String, dynamic>;
@@ -106,11 +114,13 @@ class _Profile extends State<Profile> {
                           leading: Icon(Icons.phone),
                           trailing: IconButton(
                             onPressed: () async {
-                              try {
-                                var res = await http.put(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid/pi'), body: jsonEncode({"phone": data['phone'][0]}), headers: {"KEY": "testAPI_KEY12"});
-                                print(res.body);
-                              } catch (e) {
-                                print(e);
+                              if (_editPhone) {
+                                try {
+                                  var res = await http.put(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid/pi'), body: jsonEncode({"phone": data['phone'][0]}), headers: {"KEY": "testAPI_KEY12"});
+                                  print(res.body);
+                                } catch (e) {
+                                  print(e);
+                                }
                               }
 
                               setState(() {

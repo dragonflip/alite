@@ -12,16 +12,23 @@ class Support extends StatefulWidget {
 }
 
 class _Support extends State<Support> {
+  var futureData;
+
   var _uid;
 
   Future getData() async {
     final prefs = await SharedPreferences.getInstance();
     _uid = prefs.getString("uid");
 
-    var api = await http.post(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/msgs/list"), body: jsonEncode({"uid": _uid}), headers: {"KEY": "testAPI_KEY12"});
-    // print(jsonDecode(utf8.decode(api.bodyBytes)));
+    var dialogs = await http.post(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/msgs/list"), body: jsonEncode({"uid": _uid}), headers: {"KEY": "testAPI_KEY12"});
 
-    return jsonDecode(utf8.decode(api.bodyBytes));
+    return jsonDecode(utf8.decode(dialogs.bodyBytes));
+  }
+
+  @override
+  void initState() {
+    futureData = getData();
+    super.initState();
   }
 
   @override
@@ -101,7 +108,7 @@ class _Support extends State<Support> {
       ),
       body: Container(
         child: FutureBuilder(
-          future: getData(),
+          future: futureData,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final data = (snapshot.data as List<dynamic>).reversed.toList();

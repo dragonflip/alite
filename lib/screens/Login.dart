@@ -125,7 +125,7 @@ class _Login extends State<Login> {
     HapticFeedback.mediumImpact();
   }
 
-  getData() async {
+  Future getData() async {
     final prefs = await SharedPreferences.getInstance();
 
     setState(() {
@@ -158,12 +158,12 @@ class _Login extends State<Login> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset("assets/logo.png", width: 250, fit: BoxFit.fill),
-                SizedBox(height: 10),
+                Image.asset("assets/logo.png", width: 270, fit: BoxFit.fill),
+                SizedBox(height: 8),
 
-                Text("Вхід в ABillS", style: TextStyle(fontSize: 34)),
+                Text("Вхід в ABillS", style: TextStyle(fontSize: 36)),
                 Text("Для продовження введіть Ваші дані", style: TextStyle(color: Colors.grey[700], fontSize: 16)),
-                SizedBox(height: 20),
+                SizedBox(height: 16),
 
                 Form(
                   key: _formKey,
