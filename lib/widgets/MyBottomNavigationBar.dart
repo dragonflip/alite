@@ -43,9 +43,12 @@ class MyBottomNavigationBar extends StatelessWidget {
         if (routes.containsKey(ModalRoute.of(context)?.settings.name) && routes[ModalRoute.of(context)?.settings.name] as int != value) {
           if (value == 0) {
             Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
-            // Navigator.popUntil(context, ModalRoute.withName("/"));
           } else {
-            Navigator.pushNamed(context, screens[value]);
+            if (ModalRoute.of(context)!.isFirst) {
+              Navigator.pushNamed(context, screens[value]);
+            } else {
+              Navigator.pushReplacementNamed(context, screens[value]);
+            }
           }
 
           HapticFeedback.vibrate();
