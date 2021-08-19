@@ -12,7 +12,6 @@ class SupportDialog extends StatefulWidget {
 
 class _SupportDialog extends State<SupportDialog> {
   var futureData;
-
   var _uid;
 
   Future getData() async {

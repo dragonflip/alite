@@ -14,7 +14,6 @@ class Tariffs extends StatefulWidget {
 
 class _Tariffs extends State<Tariffs> {
   var futureData;
-
   var _uid, _sid, _tpId;
 
   Future getData() async {

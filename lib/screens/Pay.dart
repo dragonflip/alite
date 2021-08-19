@@ -14,11 +14,10 @@ class Pay extends StatefulWidget {
 
 class _Pay extends State<Pay> {
   var futureData;
-
-  final _focusNode = FocusNode();
-
   var _uid, _sid;
 
+  final _focusNode = FocusNode();
+  final _controller = TextEditingController();
   var _amount = "${(290 - 123.50).toStringAsFixed(2)}";
 
   Future getData() async {
@@ -56,6 +55,11 @@ class _Pay extends State<Pay> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               var data = snapshot.data as Map<String, dynamic>;
+
+              if (_amount != "0") {
+                _controller.text = _amount;
+                _controller.selection = TextSelection.fromPosition(TextPosition(offset: _controller.text.length));
+              }
 
               return ListView(
                 physics: BouncingScrollPhysics(),
@@ -129,9 +133,7 @@ class _Pay extends State<Pay> {
                               });
                             },
 
-                            initialValue: "$_amount",
-                            key: Key("amount_$_amount"),
-
+                            controller: _controller,
                             keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
                             inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$'))],
                             maxLength: 6,
@@ -196,7 +198,8 @@ class _Pay extends State<Pay> {
                               if (_amount != "0") {
                                 launch("https://next.privat24.ua/money-transfer/card");
                               } else {
-                                _focusNode.requestFocus();
+                                _focusNode.unfocus();
+                                WidgetsBinding.instance?.addPostFrameCallback((_) => _focusNode.requestFocus());
                               }
                             },
                             child: ListTile(
@@ -217,9 +220,9 @@ class _Pay extends State<Pay> {
                               isThreeLine: true,
                             ),
                             style: ElevatedButton.styleFrom(
-                                primary: Colors.white,
-                                onPrimary: Colors.red[200],
-                                padding: EdgeInsets.zero
+                              primary: Colors.white,
+                              onPrimary: Colors.red[200],
+                              padding: EdgeInsets.zero,
                             ),
                           ),
                           SizedBox(height: 8),
@@ -229,8 +232,8 @@ class _Pay extends State<Pay> {
                                 var url = "https://www.liqpay.ua/uk/checkout/card/380660068608";
                                 await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
                               } else {
-                                // TODO _focusNode.unfocus();
-                                _focusNode.requestFocus();
+                                _focusNode.unfocus();
+                                WidgetsBinding.instance?.addPostFrameCallback((_) => _focusNode.requestFocus());
                               }
                             },
                             child: ListTile(
@@ -251,9 +254,9 @@ class _Pay extends State<Pay> {
                               isThreeLine: true,
                             ),
                             style: ElevatedButton.styleFrom(
-                                primary: Colors.white,
-                                onPrimary: Colors.red[200],
-                                padding: EdgeInsets.zero
+                              primary: Colors.white,
+                              onPrimary: Colors.red[200],
+                              padding: EdgeInsets.zero,
                             ),
                           ),
                           SizedBox(height: 8),
@@ -262,7 +265,8 @@ class _Pay extends State<Pay> {
                               if (_amount != "0") {
                                 launch("https://easypay.ua/ua/moneytransfer");
                               } else {
-                                _focusNode.requestFocus();
+                                _focusNode.unfocus();
+                                WidgetsBinding.instance?.addPostFrameCallback((_) => _focusNode.requestFocus());
                               }
                             },
                             child: ListTile(
@@ -283,9 +287,9 @@ class _Pay extends State<Pay> {
                               isThreeLine: true,
                             ),
                             style: ElevatedButton.styleFrom(
-                                primary: Colors.white,
-                                onPrimary: Colors.red[200],
-                                padding: EdgeInsets.zero
+                              primary: Colors.white,
+                              onPrimary: Colors.red[200],
+                              padding: EdgeInsets.zero,
                             ),
                           ),
                           SizedBox(height: 8),

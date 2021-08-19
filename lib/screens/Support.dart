@@ -13,7 +13,6 @@ class Support extends StatefulWidget {
 
 class _Support extends State<Support> {
   var futureData;
-
   var _uid;
 
   Future getData() async {

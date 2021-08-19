@@ -14,12 +14,11 @@ class Profile extends StatefulWidget {
 
 class _Profile extends State<Profile> {
   var futureData;
+  var _uid, _sid, _login;
 
   var _editPhone = false;
   var _editEmail = false;
   final _focusNode = FocusNode();
-
-  var _uid, _sid, _login;
 
   Future getData() async {
     final prefs = await SharedPreferences.getInstance();

@@ -11,11 +11,10 @@ class Home extends StatefulWidget {
   _Home createState() => _Home();
 }
 
+var futureData;
+var _uid, _sid;
+
 class _Home extends State<Home> {
-  var futureData;
-
-  var _uid, _sid;
-
   Future getData() async {
     final prefs = await SharedPreferences.getInstance();
     _uid = prefs.getString("uid");
@@ -48,7 +47,7 @@ class _Home extends State<Home> {
 
   @override
   void initState() {
-    futureData = getData();
+    futureData = futureData ?? getData();
     super.initState();
   }
 

@@ -90,7 +90,7 @@ class _More extends State<More> {
                               prefs.remove("url");
                               prefs.remove("port");
 
-                              Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+                              Navigator.pushNamedAndRemoveUntil(context, "login", (route) => false);
                             },
                             child: Text("ВИЙТИ"),
                           ),
