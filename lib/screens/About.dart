@@ -8,9 +8,10 @@ class About extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar("Про нас"),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Container(
+      body: Container(
+        constraints: BoxConstraints.expand(),
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           child: Card(
             margin: EdgeInsets.all(8),
             child: Padding(

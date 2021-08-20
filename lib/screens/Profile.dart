@@ -12,10 +12,10 @@ class Profile extends StatefulWidget {
   createState() => _Profile();
 }
 
-class _Profile extends State<Profile> {
-  var futureData;
-  var _uid, _sid, _login;
+var futureData;
+var _uid, _sid, _login;
 
+class _Profile extends State<Profile> {
   var _editPhone = false;
   var _editEmail = false;
   final _focusNode = FocusNode();
@@ -33,7 +33,7 @@ class _Profile extends State<Profile> {
 
   @override
   void initState() {
-    futureData = getData();
+    futureData = futureData ?? getData();
     super.initState();
   }
 
@@ -41,9 +41,10 @@ class _Profile extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-        child: Container(
+      body: Container(
+        constraints: BoxConstraints.expand(),
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           child: FutureBuilder(
             future: futureData,
             builder: (context, snapshot) {

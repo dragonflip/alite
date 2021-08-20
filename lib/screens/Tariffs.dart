@@ -12,10 +12,10 @@ class Tariffs extends StatefulWidget {
   _Tariffs createState() => _Tariffs();
 }
 
-class _Tariffs extends State<Tariffs> {
-  var futureData;
-  var _uid, _sid, _tpId;
+var futureData;
+var _uid, _sid, _tpId;
 
+class _Tariffs extends State<Tariffs> {
   Future getData() async {
     final prefs = await SharedPreferences.getInstance();
     _uid = prefs.getString("uid");
@@ -35,7 +35,7 @@ class _Tariffs extends State<Tariffs> {
 
   @override
   void initState() {
-    futureData = getData();
+    futureData = futureData ?? getData();
     super.initState();
   }
 
@@ -50,94 +50,96 @@ class _Tariffs extends State<Tariffs> {
             if (snapshot.hasData) {
               final data = snapshot.data as List<dynamic>;
 
-              return ListView.builder(
-                itemCount: data.length,
-                physics: BouncingScrollPhysics(),
+              return Scrollbar(
+                child: ListView.builder(
+                  itemCount: data.length,
+                  physics: BouncingScrollPhysics(),
 
-                itemBuilder: (_, index) => Card(
-                  margin: EdgeInsets.all(8),
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            data[index]['id'] == _tpId ? Row(
-                              children: [
-                                Icon(Icons.check_circle, color: Colors.green),
-                                SizedBox(width: 8),
-                              ],
-                            ) : Wrap(),
-                            Text("Інтернет «${data[index]['name']}»", style: TextStyle(fontSize: 24)),
-                          ],
-                        ),
-                        SizedBox(height: 8),
+                  itemBuilder: (_, index) => Card(
+                    margin: EdgeInsets.all(8),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              data[index]['id'] == _tpId ? Row(
+                                children: [
+                                  Icon(Icons.check_circle, color: Colors.green),
+                                  SizedBox(width: 8),
+                                ],
+                              ) : Wrap(),
+                              Text("Інтернет «${data[index]['name']}»", style: TextStyle(fontSize: 24)),
+                            ],
+                          ),
+                          SizedBox(height: 8),
 
-                        ListTile(
-                          title: Text("${data[index]['speed']} Мб/c"),
-                          subtitle: Text("Швидкість"),
-                          leading: Icon(Icons.network_check),
-                        ),
-                        Divider(),
+                          ListTile(
+                            title: Text("${data[index]['speed']} Мб/c"),
+                            subtitle: Text("Швидкість"),
+                            leading: Icon(Icons.network_check),
+                          ),
+                          Divider(),
 
-                        ListTile(
-                          title: Text("${data[index]['monthFee']} грн", style: TextStyle(fontSize: 18)),
-                          subtitle: Text("Ціна"),
-                          leading: Icon(Icons.attach_money),
-                          trailing: data[index]['id'] != _tpId ? ElevatedButton(
-                            onPressed: () {},
-                            child: Text("ПІДКЛЮЧИТИ"),
-                            style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                            ),
-                          ) : TextButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                  title: Text('Призупинити тариф'),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      TextField(
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          labelText: "Зупинити з - по",
-                                          hintText: "Оберіть діапазон дати",
-                                          suffixIcon: Icon(Icons.calendar_today),
+                          ListTile(
+                            title: Text("${data[index]['monthFee']} грн", style: TextStyle(fontSize: 18)),
+                            subtitle: Text("Ціна"),
+                            leading: Icon(Icons.attach_money),
+                            trailing: data[index]['id'] != _tpId ? ElevatedButton(
+                              onPressed: () {},
+                              child: Text("ПІДКЛЮЧИТИ"),
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                              ),
+                            ) : TextButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                    title: Text('Призупинити тариф'),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        TextField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            labelText: "Зупинити з - по",
+                                            hintText: "Оберіть діапазон дати",
+                                            suffixIcon: Icon(Icons.calendar_today),
+                                          ),
+                                          readOnly: true,
+                                          showCursor: true,
+                                          onTap: () {
+                                            showDateRangePicker(
+                                              context: context,
+                                              firstDate: DateTime(2021),
+                                              lastDate: DateTime(2022),
+                                              initialDateRange: DateTimeRange(start: DateTime.now(), end: DateTime.now()),
+                                              initialEntryMode: DatePickerEntryMode.input,
+                                            );
+                                          },
                                         ),
-                                        readOnly: true,
-                                        showCursor: true,
-                                        onTap: () {
-                                          showDateRangePicker(
-                                            context: context,
-                                            firstDate: DateTime(2021),
-                                            lastDate: DateTime(2022),
-                                            initialDateRange: DateTimeRange(start: DateTime.now(), end: DateTime.now()),
-                                            initialEntryMode: DatePickerEntryMode.input,
-                                          );
-                                        },
+                                      ],
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
+                                      ),
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: Text("ПРИЗУПИНИТИ"),
                                       ),
                                     ],
                                   ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
-                                    ),
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: Text("ПРИЗУПИНИТИ"),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                            child: Text("ПРИЗУПИНИТИ"),
+                                );
+                              },
+                              child: Text("ПРИЗУПИНИТИ"),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

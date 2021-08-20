@@ -7,9 +7,10 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar("Налаштування"),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Container(
+      body: Container(
+        constraints: BoxConstraints.expand(),
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           child: Card(
             margin: EdgeInsets.all(8),
             child: Column(
@@ -18,22 +19,22 @@ class Settings extends StatelessWidget {
                   title: Text("Мова"),
                   leading: Icon(Icons.language),
                   trailing: DropdownButton(
-                    onChanged: (value) {},
-                    value: 0,
-                    items: [
-                      DropdownMenuItem(
-                        value: 0,
-                        child: Text("Українська"),
-                      ),
-                      DropdownMenuItem(
-                        value: 1,
-                        child: Text("Русский"),
-                      ),
-                      DropdownMenuItem(
-                        value: 2,
-                        child: Text("English"),
-                      ),
-                    ]
+                      onChanged: (value) {},
+                      value: 0,
+                      items: [
+                        DropdownMenuItem(
+                          value: 0,
+                          child: Text("Українська"),
+                        ),
+                        DropdownMenuItem(
+                          value: 1,
+                          child: Text("Русский"),
+                        ),
+                        DropdownMenuItem(
+                          value: 2,
+                          child: Text("English"),
+                        ),
+                      ]
                   ),
                 ),
                 ListTile(
