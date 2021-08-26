@@ -37,12 +37,17 @@ class _Home extends State<Home> {
       }
     }
 
-    var internetInfo = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/user/$_uid/internet"), headers: {"USERSID": _sid});
-    var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes))[0]; // TODO multiple tariffs
+    var internetResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/user/$_uid/internet"), headers: {"USERSID": _sid});
+    var internet = jsonDecode(utf8.decode(internetResponse.bodyBytes))[0]; // TODO multiple tariffs
+
+    var nextFeeResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/user/$_uid/internet/${internet['id']}/warnings"), headers: {"USERSID": _sid});
+    var nextFee = jsonDecode(utf8.decode(nextFeeResponse.bodyBytes));
+
+    print(nextFee);
 
     prefs.setString("tpId", internet['id']);
 
-    return {"profile": profile, "services": services, "internet": internet};
+    return {"profile": profile, "services": services, "internet": internet, "nextFee": nextFee};
   }
 
   Future checkData() async {
@@ -121,7 +126,8 @@ class _Home extends State<Home> {
                                   ],
                                 ),
                                 SizedBox(height: 8),
-                                Text("15.08.2021 буде знято 290 грн"),
+                                // Text("15.08.2021 буде знято 290 грн"), // TODO output like this
+                                Text(futureData['nextFee']['warning']),
                                 SizedBox(height: 16),
 
                                 ElevatedButton(
