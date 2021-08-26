@@ -29,7 +29,7 @@ class _More extends State<More> {
     print(packageInfo.version);
     print(packageInfo.buildSignature);
 
-    return {"appVersion": packageInfo.version};
+    return {'appVersion': packageInfo.version};
   }
 
   @override
@@ -53,23 +53,23 @@ class _More extends State<More> {
                 children: [
                   ListTile(
                     onTap: () {
-                      Navigator.pushNamed(context, "/about");
+                      Navigator.pushNamed(context, '/about');
                     },
-                    title: Text("Про нас"),
+                    title: Text('Про нас'),
                     leading: Icon(Icons.info_outlined),
                     trailing: Icon(Icons.keyboard_arrow_right),
                   ),
                   ListTile(
                     onTap: () {
-                      Navigator.pushNamed(context, "/settings");
+                      Navigator.pushNamed(context, '/settings');
                     },
-                    title: Text("Налаштування"),
+                    title: Text('Налаштування'),
                     leading: Icon(Icons.settings_outlined),
                     trailing: Icon(Icons.keyboard_arrow_right),
                   ),
                   ListTile(
-                    onTap: () => launch("https://play.google.com/store/apps/details?id=com.abillsmobile.abillsclient"),
-                    title: Text("Оцінити додаток"),
+                    onTap: () => launch('https://play.google.com/store/apps/details?id=com.abillsmobile.abillsclient'),
+                    title: Text('Оцінити додаток'),
                     leading: Icon(Icons.star_border),
                     trailing: Icon(Icons.keyboard_arrow_right),
                   ),
@@ -83,30 +83,30 @@ class _More extends State<More> {
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
+                              child: Text('СКАСУВАТИ', style: TextStyle(color: Colors.black54)),
                             ),
                             TextButton(
                               onPressed: () async {
                                 final prefs = await SharedPreferences.getInstance();
 
-                                prefs.remove("login");
-                                prefs.remove("password");
-                                prefs.remove("url");
-                                prefs.remove("port");
+                                prefs.remove('login');
+                                prefs.remove('password');
+                                prefs.remove('url');
+                                prefs.remove('port');
 
-                                prefs.remove("uid");
-                                prefs.remove("sid");
-                                prefs.remove("tpId");
+                                prefs.remove('uid');
+                                prefs.remove('sid');
+                                prefs.remove('tpId');
 
-                                Navigator.pushNamedAndRemoveUntil(context, "login", (route) => false);
+                                Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
                               },
-                              child: Text("ВИЙТИ"),
+                              child: Text('ВИЙТИ'),
                             ),
                           ],
                         ),
                       );
                     },
-                    title: Text("Вийти", style: TextStyle(color: Colors.red)),
+                    title: Text('Вийти', style: TextStyle(color: Colors.red)),
                     leading: Icon(Icons.logout, color: Colors.red),
                     trailing: Icon(Icons.keyboard_arrow_right, color: Colors.red),
                   ),
@@ -124,20 +124,20 @@ class _More extends State<More> {
                               _loading = true;
                             });
 
-                            var versionResponse = await http.get(Uri.parse("$apiUrl/version"), headers: {"KEY": "testAPI_KEY12"});
+                            var versionResponse = await http.get(Uri.parse('$apiUrl/version'), headers: {'KEY': 'testAPI_KEY12'});
                             var version = jsonDecode(utf8.decode(versionResponse.bodyBytes));
 
-                            Clipboard.setData(ClipboardData(text: "ABillS lite\n"
-                                "Версія додатку: ${data['appVersion']}\n"
-                                "Версія білінгу: ${version['version']}\n"
-                                "Версія API: ${version['apiVersion']}"));
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Докладнішу інформацію скопійовано")));
+                            Clipboard.setData(ClipboardData(text: 'ABillS lite\n'
+                                'Версія додатку: ${data['appVersion']}\n'
+                                'Версія білінгу: ${version['version']}\n'
+                                'Версія API: ${version['apiVersion']}'));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Докладнішу інформацію скопійовано')));
 
                             setState(() {
                               _loading = false;
                             });
                           },
-                          title: Text("Версія ${data['appVersion']}"),
+                          title: Text('Версія ${data['appVersion']}'),
                           leading: Icon(Icons.code),
                           trailing: _loading ? CircularProgressIndicator() : Wrap(),
                         );

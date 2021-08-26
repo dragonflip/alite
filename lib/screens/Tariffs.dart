@@ -19,11 +19,11 @@ class _Tariffs extends State<Tariffs> {
   Future getData() async {
     await getGlobals();
 
-    var internetInfo = await http.get(Uri.parse("$apiUrl/user/$uid/internet"), headers: {"USERSID": sid});
+    var internetInfo = await http.get(Uri.parse('$apiUrl/user/$uid/internet'), headers: {'USERSID': sid});
     var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes))[0];
     internet['name'] = internet['tpName'];
 
-    var tariffsInfo = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/tariffs'), headers: {"USERSID": sid});
+    var tariffsInfo = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/tariffs'), headers: {'USERSID': sid});
     var tariffs = jsonDecode(utf8.decode(tariffsInfo.bodyBytes));
     tariffs.insert(0, internet);
 
@@ -67,25 +67,25 @@ class _Tariffs extends State<Tariffs> {
                                   SizedBox(width: 8),
                                 ],
                               ) : Wrap(),
-                              Text("Інтернет «${data[index]['name']}»", style: TextStyle(fontSize: 24)),
+                              Text('Інтернет «${data[index]['name']}»', style: TextStyle(fontSize: 24)),
                             ],
                           ),
                           SizedBox(height: 8),
 
                           ListTile(
-                            title: Text("${data[index]['speed']} Мб/c"),
-                            subtitle: Text("Швидкість"),
+                            title: Text('${data[index]['speed']} Мб/c'),
+                            subtitle: Text('Швидкість'),
                             leading: Icon(Icons.network_check),
                           ),
                           Divider(),
 
                           ListTile(
-                            title: Text("${data[index]['monthFee']} грн", style: TextStyle(fontSize: 18)),
-                            subtitle: Text("Ціна"),
+                            title: Text('${data[index]['monthFee']} грн', style: TextStyle(fontSize: 18)),
+                            subtitle: Text('Ціна'),
                             leading: Icon(Icons.attach_money),
                             trailing: data[index]['id'] != tpId ? ElevatedButton(
                               onPressed: () {},
-                              child: Text("ПІДКЛЮЧИТИ"),
+                              child: Text('ПІДКЛЮЧИТИ'),
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
                               ),
@@ -101,8 +101,8 @@ class _Tariffs extends State<Tariffs> {
                                         TextField(
                                           decoration: InputDecoration(
                                             border: OutlineInputBorder(),
-                                            labelText: "Зупинити з - по",
-                                            hintText: "Оберіть діапазон дати",
+                                            labelText: 'Зупинити з - по',
+                                            hintText: 'Оберіть діапазон дати',
                                             suffixIcon: Icon(Icons.calendar_today),
                                           ),
                                           readOnly: true,
@@ -122,17 +122,17 @@ class _Tariffs extends State<Tariffs> {
                                     actions: [
                                       TextButton(
                                         onPressed: () => Navigator.pop(context),
-                                        child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
+                                        child: Text('СКАСУВАТИ', style: TextStyle(color: Colors.black54)),
                                       ),
                                       TextButton(
                                         onPressed: () => Navigator.pop(context),
-                                        child: Text("ПРИЗУПИНИТИ"),
+                                        child: Text('ПРИЗУПИНИТИ'),
                                       ),
                                     ],
                                   ),
                                 );
                               },
-                              child: Text("ПРИЗУПИНИТИ"),
+                              child: Text('ПРИЗУПИНИТИ'),
                             ),
                           ),
                         ],

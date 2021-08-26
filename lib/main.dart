@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'screens/Login.dart';
-
 import 'screens/Home.dart';
 import 'screens/Tariffs.dart';
 import 'screens/Profile.dart';
 import 'screens/More.dart';
+import 'screens/Login.dart';
 
 import 'screens/Notifications.dart';
 import 'screens/Support.dart';

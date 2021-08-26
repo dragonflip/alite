@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
-  final Map<String, int> routes = {"/": 0, "/tariffs": 1, "/profile": 2, "/more": 3};
+  final Map<String, int> routes = {'/': 0, '/tariffs': 1, '/profile': 2, '/more': 3};
   final List<String> screens = ['/', '/tariffs', '/profile', '/more'];
 
   @override
@@ -42,7 +42,7 @@ class MyBottomNavigationBar extends StatelessWidget {
       onTap: (value) {
         if (routes.containsKey(ModalRoute.of(context)?.settings.name) && routes[ModalRoute.of(context)?.settings.name] as int != value) {
           if (value == 0) {
-            Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+            Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
           } else {
             if (ModalRoute.of(context)!.isFirst) {
               Navigator.pushNamed(context, screens[value]);

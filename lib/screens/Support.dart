@@ -18,7 +18,7 @@ class _Support extends State<Support> {
   Future getData() async {
     await getGlobals();
 
-    var dialogs = await http.post(Uri.parse("$apiUrl/msgs/list"), body: jsonEncode({"uid": uid}), headers: {"KEY": "testAPI_KEY12"});
+    var dialogs = await http.post(Uri.parse('$apiUrl/msgs/list'), body: jsonEncode({'uid': uid}), headers: {'KEY': 'testAPI_KEY12'});
 
     return jsonDecode(utf8.decode(dialogs.bodyBytes));
   }
@@ -36,7 +36,7 @@ class _Support extends State<Support> {
     List<Color> statusColors = [Colors.blue, Colors.red, Colors.green, Colors.black, Colors.black, Colors.black, Colors.orange];
 
     return Scaffold(
-      appBar: MyAppBar("Технічна підтримка"),
+      appBar: MyAppBar('Технічна підтримка'),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -56,12 +56,12 @@ class _Support extends State<Support> {
                       textCapitalization: TextCapitalization.sentences,
 
                       decoration: InputDecoration(
-                        labelText: "Тема",
+                        labelText: 'Тема',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Введіть тему повідомлення";
+                          return 'Введіть тему повідомлення';
                         }
                       },
                       // onSaved: (value) => _login = value,
@@ -74,13 +74,13 @@ class _Support extends State<Support> {
                       textCapitalization: TextCapitalization.sentences,
 
                       decoration: InputDecoration(
-                        labelText: "Текст повідомлення",
+                        labelText: 'Текст повідомлення',
                         alignLabelWithHint: true,
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Введіть текст повідомлення";
+                          return 'Введіть текст повідомлення';
                         }
                       },
                       // onSaved: (value) => _login = value,
@@ -91,18 +91,18 @@ class _Support extends State<Support> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
+                  child: Text('СКАСУВАТИ', style: TextStyle(color: Colors.black54)),
                 ),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text("ВІДПРАВИТИ"),
+                  child: Text('ВІДПРАВИТИ'),
                 ),
               ],
             ),
           );
         },
         child: Icon(Icons.edit),
-        tooltip: "Нове повідомлення в тех. підтримку",
+        tooltip: 'Нове повідомлення в тех. підтримку',
       ),
       body: Container(
         child: FutureBuilder(
@@ -120,7 +120,7 @@ class _Support extends State<Support> {
                 itemCount: data.length,
                 itemBuilder: (_, index) => ListTile(
                   onTap: () {
-                    Navigator.pushNamed(context, "/support_dialog", arguments: index);
+                    Navigator.pushNamed(context, '/support_dialog', arguments: index);
                   },
                   title: Text(data[index]['subject'], maxLines: 1, overflow: TextOverflow.ellipsis),
                   subtitle: RichText(
@@ -130,7 +130,7 @@ class _Support extends State<Support> {
                     text: TextSpan(
                       style: TextStyle(color: Colors.black54),
                       children: [
-                        TextSpan(text: index == 3 ? "Відповідь: " : "Ви: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: index == 3 ? 'Відповідь: ' : 'Ви: ', style: TextStyle(fontWeight: FontWeight.bold)),
                         TextSpan(text: messages[index]),
                       ],
                     ),
@@ -139,7 +139,7 @@ class _Support extends State<Support> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(statuses[int.parse(data[index]['stateId'])], style: TextStyle(color: statusColors[int.parse(data[index]['stateId'])], fontSize: 12)),
-                      Text(DateFormat("dd.MM.yyyy").format(DateTime.parse(data[index]['date']))),
+                      Text(DateFormat('dd.MM.yyyy').format(DateTime.parse(data[index]['date']))),
                     ],
                   ),
                   isThreeLine: true,

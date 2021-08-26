@@ -5,17 +5,17 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => new Size.fromHeight(kToolbarHeight);
   final String title;
 
-  MyAppBar([this.title = "ABillS"]);
+  MyAppBar([this.title = 'ABillS']);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: this.title == "ABillS" ? RichText(
+      title: this.title == 'ABillS' ? RichText(
         text: TextSpan(
           style: TextStyle(fontSize: 26),
           children: [
-            TextSpan(text: "A", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-            TextSpan(text: "BillS", style: TextStyle(color: Colors.black54)),
+            TextSpan(text: 'A', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+            TextSpan(text: 'BillS', style: TextStyle(color: Colors.black54)),
           ]
         ),
       ) : Text(this.title, style: TextStyle(color: Colors.black87)),
@@ -29,12 +29,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       iconTheme: IconThemeData(color: Colors.black54),
 
       actions: [
-        this.title == "ABillS" ? IconButton(
+        this.title == 'ABillS' ? IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, "/notifications");
+            Navigator.pushNamed(context, '/notifications');
           },
           icon: Icon(Icons.notifications),
-          tooltip: "Сповіщення",
+          tooltip: 'Сповіщення',
         ) : Wrap(),
         SizedBox(width: 4),
       ],

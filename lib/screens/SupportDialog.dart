@@ -17,7 +17,7 @@ class _SupportDialog extends State<SupportDialog> {
   Future getData() async {
     await getGlobals();
 
-    var messages = await http.get(Uri.parse("$apiUrl/msgs/186255"), headers: {"KEY": "testAPI_KEY12"});
+    var messages = await http.get(Uri.parse('$apiUrl/msgs/186255'), headers: {'KEY': 'testAPI_KEY12'});
     print(utf8.decode(messages.bodyBytes));
 
     return jsonDecode(utf8.decode(messages.bodyBytes));
@@ -44,12 +44,12 @@ class _SupportDialog extends State<SupportDialog> {
               child: ListView(
                 physics: BouncingScrollPhysics(),
                 children: [
-                  Chip(label: Text("12.07.2021")),
+                  Chip(label: Text('12.07.2021')),
                   FutureBuilder(
                     future: futureData,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return Text("asd");
+                        return Text('TODO messages');
                       } else {
                         return LinearProgressIndicator();
                       }
@@ -66,9 +66,9 @@ class _SupportDialog extends State<SupportDialog> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text("Привіт", style: TextStyle(color: Colors.white, fontSize: 16)),
+                            Text('Привіт', style: TextStyle(color: Colors.white, fontSize: 16)),
                             SizedBox(width: 8),
-                            Text("13:28", style: TextStyle(color: Colors.white70, fontSize: 12))
+                            Text('13:28', style: TextStyle(color: Colors.white70, fontSize: 12))
                           ],
                         ),
                       ),
@@ -86,9 +86,9 @@ class _SupportDialog extends State<SupportDialog> {
                           // mainAxisAlignment: MainAxisAlignment.,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text("Що робиш?", style: TextStyle(color: Colors.black, fontSize: 16)),
+                            Text('Що робиш?', style: TextStyle(color: Colors.black, fontSize: 16)),
                             SizedBox(width: 8),
-                            Text("13:28", style: TextStyle(color: Colors.black54, fontSize: 12))
+                            Text('13:28', style: TextStyle(color: Colors.black54, fontSize: 12))
                           ],
                         ),
                       ),
@@ -106,9 +106,9 @@ class _SupportDialog extends State<SupportDialog> {
                           // mainAxisAlignment: MainAxisAlignment.,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text("Ремонтую інтернет після вітру", style: TextStyle(color: Colors.white, fontSize: 16)),
+                            Text('Ремонтую інтернет після вітру', style: TextStyle(color: Colors.white, fontSize: 16)),
                             SizedBox(width: 8),
-                            Text("13:28", style: TextStyle(color: Colors.white70, fontSize: 12))
+                            Text('13:28', style: TextStyle(color: Colors.white70, fontSize: 12))
                           ],
                         ),
                       ),
@@ -125,9 +125,9 @@ class _SupportDialog extends State<SupportDialog> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text("Зараз приїде наша бригада", style: TextStyle(color: Colors.black, fontSize: 16)),
+                            Text('Зараз приїде наша бригада', style: TextStyle(color: Colors.black, fontSize: 16)),
                             SizedBox(width: 8),
-                            Text("13:28", style: TextStyle(color: Colors.black54, fontSize: 12))
+                            Text('13:28', style: TextStyle(color: Colors.black54, fontSize: 12))
                           ],
                         ),
                       ),
@@ -145,9 +145,9 @@ class _SupportDialog extends State<SupportDialog> {
                           // mainAxisAlignment: MainAxisAlignment.,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text("Просто чекайте нас!", style: TextStyle(color: Colors.black, fontSize: 16)),
+                            Text('Просто чекайте нас!', style: TextStyle(color: Colors.black, fontSize: 16)),
                             SizedBox(width: 8),
-                            Text("13:28", style: TextStyle(color: Colors.black54, fontSize: 12))
+                            Text('13:28', style: TextStyle(color: Colors.black54, fontSize: 12))
                           ],
                         ),
                       ),
@@ -166,15 +166,15 @@ class _SupportDialog extends State<SupportDialog> {
                     maxLines: 5,
                     minLines: 1,
                     decoration: InputDecoration(
-                      hintText: "Повідомлення",
+                      hintText: 'Повідомлення',
                       suffixIcon: IconButton(
                         onPressed: () {},
                         icon: Icon(Icons.send, color: Colors.red),
-                        tooltip: "Відправити",
+                        tooltip: 'Відправити',
                       ),
                     ),
                   )
-                ) : Text("Тема закрита", style: TextStyle(color: Colors.red, fontSize: 18)),
+                ) : Text('Тема закрита', style: TextStyle(color: Colors.red, fontSize: 18)),
               ],
             ),
           ],

@@ -6,7 +6,7 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar("Налаштування"),
+      appBar: MyAppBar('Налаштування'),
       body: Container(
         constraints: BoxConstraints.expand(),
         child: SingleChildScrollView(
@@ -16,7 +16,7 @@ class Settings extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  title: Text("Мова"),
+                  title: Text('Мова'),
                   leading: Icon(Icons.language),
                   trailing: DropdownButton(
                       onChanged: (value) {},
@@ -24,21 +24,21 @@ class Settings extends StatelessWidget {
                       items: [
                         DropdownMenuItem(
                           value: 0,
-                          child: Text("Українська"),
+                          child: Text('Українська'),
                         ),
                         DropdownMenuItem(
                           value: 1,
-                          child: Text("Русский"),
+                          child: Text('Русский'),
                         ),
                         DropdownMenuItem(
                           value: 2,
-                          child: Text("English"),
+                          child: Text('English'),
                         ),
                       ]
                   ),
                 ),
                 ListTile(
-                  title: Text("Сповіщення"),
+                  title: Text('Сповіщення'),
                   leading: Icon(Icons.notifications),
                   trailing: Switch(
                     onChanged: (value) {},

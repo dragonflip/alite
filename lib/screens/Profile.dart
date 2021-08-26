@@ -23,7 +23,7 @@ class _Profile extends State<Profile> {
   Future getData() async {
     await getGlobals();
 
-    var profile = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {"USERSID": sid});
+    var profile = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {'USERSID': sid});
 
     return jsonDecode(utf8.decode(profile.bodyBytes));
   }
@@ -64,27 +64,27 @@ class _Profile extends State<Profile> {
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
+                                    child: Text('СКАСУВАТИ', style: TextStyle(color: Colors.black54)),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: Text("ЗАМОРОЗИТИ"),
+                                    child: Text('ЗАМОРОЗИТИ'),
                                   ),
                                 ],
                               ),
                             );
                           },
                           icon: Icon(Icons.block),
-                          label: Text("Заморозити аккаунт"),
+                          label: Text('Заморозити аккаунт'),
                         ),
                         ListTile(
                           title: Text(data['fio']),
-                          subtitle: Text("ПІБ"),
+                          subtitle: Text('ПІБ'),
                           leading: Icon(Icons.person),
                         ),
                         ListTile(
                           title: Text(login),
-                          subtitle: Text("Логін"),
+                          subtitle: Text('Логін'),
                           leading: Icon(Icons.assignment_ind),
                         ),
                         ListTile(
@@ -100,20 +100,20 @@ class _Profile extends State<Profile> {
 
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return "Введіть телефон";
+                                return 'Введіть телефон';
                               }
 
                               data['phone'][0] = value;
                             },
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                           ) : Text(data['phone'][0]),
-                          subtitle: Text("Телефон"),
+                          subtitle: Text('Телефон'),
                           leading: Icon(Icons.phone),
                           trailing: IconButton(
                             onPressed: () async {
                               if (_editPhone) {
                                 try {
-                                  var res = await http.put(Uri.parse('$apiUrl/users/$uid/pi'), body: jsonEncode({"phone": data['phone'][0]}), headers: {"KEY": "testAPI_KEY12"});
+                                  var res = await http.put(Uri.parse('$apiUrl/users/$uid/pi'), body: jsonEncode({'phone': data['phone'][0]}), headers: {'KEY': 'testAPI_KEY12'});
                                   print(res.body);
                                 } catch (e) {
                                   print(e);
@@ -126,12 +126,12 @@ class _Profile extends State<Profile> {
                               });
                             },
                             icon: !_editPhone ? Icon(Icons.edit) : Icon(Icons.check, color: Colors.red),
-                            tooltip: !_editPhone ? "Редагувати телефон" : "Зберегти зміни",
+                            tooltip: !_editPhone ? 'Редагувати телефон' : 'Зберегти зміни',
                           ),
                         ),
                         ListTile(
-                          title: Text("${data['addressFull'].trim()}"),
-                          subtitle: Text("Адреса"),
+                          title: Text(data['addressFull'].trim()),
+                          subtitle: Text('Адреса'),
                           leading: Icon(Icons.home),
                         ),
                         ListTile(
@@ -144,8 +144,8 @@ class _Profile extends State<Profile> {
                               isDense: true,
                               contentPadding: EdgeInsets.symmetric(vertical: 1),
                             ),
-                          ) : Text("${data['email'][0]}"),
-                          subtitle: Text("Електронна пошта"),
+                          ) : Text(data['email'][0]),
+                          subtitle: Text('Електронна пошта'),
                           leading: Icon(Icons.email),
                           trailing: IconButton(
                             onPressed: () {
@@ -155,17 +155,17 @@ class _Profile extends State<Profile> {
                               });
                             },
                             icon: !_editEmail ? Icon(Icons.edit) : Icon(Icons.check, color: Colors.red),
-                            tooltip: !_editEmail ? "Редагувати електронну пошту" : "Зберегти зміни",
+                            tooltip: !_editEmail ? 'Редагувати електронну пошту' : 'Зберегти зміни',
                           ),
                         ),
                         ListTile(
-                          title: Text("${data['contractId']}"),
-                          subtitle: Text("Контракт №"),
+                          title: Text(data['contractId']),
+                          subtitle: Text('Контракт №'),
                           leading: Icon(Icons.assignment),
                         ),
                         ListTile(
-                          title: Text("${DateFormat("dd.MM.yyyy").format(DateTime.parse(data['contractDate']))}"),
-                          subtitle: Text("Дата підписання контракту"),
+                          title: Text(DateFormat('dd.MM.yyyy').format(DateTime.parse(data['contractDate']))),
+                          subtitle: Text('Дата підписання контракту'),
                           leading: Icon(Icons.date_range),
                         ),
                       ],
