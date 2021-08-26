@@ -6,6 +6,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../globals.dart';
+
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
 
@@ -92,6 +94,10 @@ class _More extends State<More> {
                                 prefs.remove("url");
                                 prefs.remove("port");
 
+                                prefs.remove("uid");
+                                prefs.remove("sid");
+                                prefs.remove("tpId");
+
                                 Navigator.pushNamedAndRemoveUntil(context, "login", (route) => false);
                               },
                               child: Text("ВИЙТИ"),
@@ -118,7 +124,7 @@ class _More extends State<More> {
                               _loading = true;
                             });
 
-                            var versionResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/version"), headers: {"KEY": "testAPI_KEY12"});
+                            var versionResponse = await http.get(Uri.parse("$apiUrl/version"), headers: {"KEY": "testAPI_KEY12"});
                             var version = jsonDecode(utf8.decode(versionResponse.bodyBytes));
 
                             Clipboard.setData(ClipboardData(text: "ABillS lite\n"
