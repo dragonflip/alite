@@ -108,7 +108,30 @@ class _Pay extends State<Pay> {
                                   Text(" грн", style: TextStyle(fontSize: 14)),
                                 ],
                               ) : OutlinedButton(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  var creditResponse = await http.post(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/user/$_uid/credit"), headers: {"USERSID": _sid});
+                                  var credit = jsonDecode(utf8.decode(creditResponse.bodyBytes));
+
+                                  print(credit);
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text("Кредит оформлено"),
+                                      content: Text("Вам надано кредит на суму ${credit['creditSum']} на ${credit['creditDays'] ?? 0} днів"),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
+                                        ),
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: Text("ОФОРМИТИ"),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
                                 child: Text("ОТРИМАТИ"),
                               ),
                             ),
@@ -295,50 +318,6 @@ class _Pay extends State<Pay> {
                               ),
                             ),
                             SizedBox(height: 8),
-
-                            // ElevatedButton(
-                            //   onPressed: () {
-                            //     showDialog(
-                            //       context: context,
-                            //       builder: (_) => AlertDialog(
-                            //         title: Text('Оформити кредит?'),
-                            //         content: Text('Вам буде надано кредит до 15.08.2021.'),
-                            //         actions: [
-                            //           TextButton(
-                            //             onPressed: () => Navigator.pop(context),
-                            //             child: Text("СКАСУВАТИ", style: TextStyle(color: Colors.black54)),
-                            //           ),
-                            //           TextButton(
-                            //             onPressed: () => Navigator.pop(context),
-                            //             child: Text("ОФОРМИТИ"),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     );
-                            //   },
-                            //   child: ListTile(
-                            //     title: Text("Кредит"),
-                            //     subtitle: Text("Оформлення кредиту"),
-                            //     leading: Center(
-                            //       widthFactor: 1,
-                            //       child: Image.network("https://cdn.iconscout.com/icon/free/png-256/credit-card-1454538-1228446.png", width: 50),
-                            //     ),
-                            //     trailing: Row(
-                            //       mainAxisSize: MainAxisSize.min,
-                            //       crossAxisAlignment: CrossAxisAlignment.end,
-                            //       children: [
-                            //         Text("$_amount", style: TextStyle(fontSize: 20)),
-                            //         Text(" грн", style: TextStyle(fontSize: 14)),
-                            //       ],
-                            //     ),
-                            //     isThreeLine: true,
-                            //   ),
-                            //   style: ElevatedButton.styleFrom(
-                            //     primary: Colors.white,
-                            //     onPrimary: Colors.red[200],
-                            //     padding: EdgeInsets.zero,
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),
