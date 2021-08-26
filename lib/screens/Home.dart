@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../globals.dart';
+
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
 
@@ -12,21 +14,18 @@ class Home extends StatefulWidget {
 }
 
 var futureData;
-var _uid, _sid;
 
 class _Home extends State<Home> {
   Future getData() async {
-    final prefs = await SharedPreferences.getInstance();
-    _uid = prefs.getString("uid");
-    _sid = prefs.getString("sid");
+    await getGlobals();
 
-    var overallInfo = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/user/$_uid'), headers: {"USERSID": _sid});
-    var personalInfo = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/user/$_uid/pi'), headers: {"USERSID": _sid});
+    var overallInfo = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {"USERSID": sid});
+    var personalInfo = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {"USERSID": sid});
 
     var profile = jsonDecode(utf8.decode(personalInfo.bodyBytes));
     profile.addAll(jsonDecode(utf8.decode(overallInfo.bodyBytes)));
 
-    var servicesResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/users/$_uid/abon"), headers: {"KEY": "testAPI_KEY12"}); // TODO change to user API
+    var servicesResponse = await http.get(Uri.parse("$apiUrl/users/$uid/abon"), headers: {"KEY": "testAPI_KEY12"}); // TODO change to user API
     var servicesInfo = jsonDecode(utf8.decode(servicesResponse.bodyBytes));
 
     var services = [];
@@ -37,14 +36,15 @@ class _Home extends State<Home> {
       }
     }
 
-    var internetResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/user/$_uid/internet"), headers: {"USERSID": _sid});
+    var internetResponse = await http.get(Uri.parse("$apiUrl/user/$uid/internet"), headers: {"USERSID": sid});
     var internet = jsonDecode(utf8.decode(internetResponse.bodyBytes))[0]; // TODO multiple tariffs
 
-    var nextFeeResponse = await http.get(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/user/$_uid/internet/${internet['id']}/warnings"), headers: {"USERSID": _sid});
+    var nextFeeResponse = await http.get(Uri.parse("$apiUrl/user/$uid/internet/${internet['id']}/warnings"), headers: {"USERSID": sid});
     var nextFee = jsonDecode(utf8.decode(nextFeeResponse.bodyBytes));
 
     print(nextFee);
 
+    var prefs = await SharedPreferences.getInstance();
     prefs.setString("tpId", internet['id']);
 
     return {"profile": profile, "services": services, "internet": internet, "nextFee": nextFee};

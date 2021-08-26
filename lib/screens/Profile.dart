@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+
+import '../globals.dart';
 
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
@@ -13,7 +14,6 @@ class Profile extends StatefulWidget {
 }
 
 var futureData;
-var _uid, _sid, _login;
 
 class _Profile extends State<Profile> {
   var _editPhone = false;
@@ -21,12 +21,9 @@ class _Profile extends State<Profile> {
   final _focusNode = FocusNode();
 
   Future getData() async {
-    final prefs = await SharedPreferences.getInstance();
-    _uid = prefs.getString("uid");
-    _sid = prefs.getString("sid");
-    _login = prefs.getString("login");
+    await getGlobals();
 
-    var profile = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/user/$_uid/pi'), headers: {"USERSID": _sid});
+    var profile = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {"USERSID": sid});
 
     return jsonDecode(utf8.decode(profile.bodyBytes));
   }
@@ -81,18 +78,18 @@ class _Profile extends State<Profile> {
                           label: Text("Заморозити аккаунт"),
                         ),
                         ListTile(
-                          title: Text("${data['fio']}"),
+                          title: Text(data['fio']),
                           subtitle: Text("ПІБ"),
                           leading: Icon(Icons.person),
                         ),
                         ListTile(
-                          title: Text("$_login"),
+                          title: Text(login),
                           subtitle: Text("Логін"),
                           leading: Icon(Icons.assignment_ind),
                         ),
                         ListTile(
                           title: _editPhone ? TextFormField(
-                            initialValue: "${data['phone'][0]}",
+                            initialValue: data['phone'][0],
                             cursorHeight: 22,
                             focusNode: _focusNode,
 
@@ -109,14 +106,14 @@ class _Profile extends State<Profile> {
                               data['phone'][0] = value;
                             },
                             autovalidateMode: AutovalidateMode.onUserInteraction,
-                          ) : Text("${data['phone'][0]}"),
+                          ) : Text(data['phone'][0]),
                           subtitle: Text("Телефон"),
                           leading: Icon(Icons.phone),
                           trailing: IconButton(
                             onPressed: () async {
                               if (_editPhone) {
                                 try {
-                                  var res = await http.put(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/users/$_uid/pi'), body: jsonEncode({"phone": data['phone'][0]}), headers: {"KEY": "testAPI_KEY12"});
+                                  var res = await http.put(Uri.parse('$apiUrl/users/$uid/pi'), body: jsonEncode({"phone": data['phone'][0]}), headers: {"KEY": "testAPI_KEY12"});
                                   print(res.body);
                                 } catch (e) {
                                   print(e);
@@ -139,7 +136,7 @@ class _Profile extends State<Profile> {
                         ),
                         ListTile(
                           title: _editEmail ? TextFormField(
-                            initialValue: "${data['email'][0]}",
+                            initialValue: data['email'][0],
                             cursorHeight: 22,
                             focusNode: _focusNode,
 

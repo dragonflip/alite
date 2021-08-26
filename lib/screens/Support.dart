@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+
+import '../globals.dart';
 
 import '../widgets/MyAppBar.dart';
 
@@ -13,13 +14,11 @@ class Support extends StatefulWidget {
 
 class _Support extends State<Support> {
   var futureData;
-  var _uid;
 
   Future getData() async {
-    final prefs = await SharedPreferences.getInstance();
-    _uid = prefs.getString("uid");
+    await getGlobals();
 
-    var dialogs = await http.post(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/msgs/list"), body: jsonEncode({"uid": _uid}), headers: {"KEY": "testAPI_KEY12"});
+    var dialogs = await http.post(Uri.parse("$apiUrl/msgs/list"), body: jsonEncode({"uid": uid}), headers: {"KEY": "testAPI_KEY12"});
 
     return jsonDecode(utf8.decode(dialogs.bodyBytes));
   }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import '../globals.dart';
 
 import '../widgets/MyAppBar.dart';
 
@@ -13,7 +14,6 @@ class Pay extends StatefulWidget {
 }
 
 var futureData;
-var _uid, _sid;
 
 class _Pay extends State<Pay> {
   final _focusNode = FocusNode();
@@ -21,11 +21,9 @@ class _Pay extends State<Pay> {
   var _amount = "${(290 - 123.50).toStringAsFixed(2)}";
 
   Future getData() async {
-    final prefs = await SharedPreferences.getInstance();
-    _uid = prefs.getString("uid");
-    _sid = prefs.getString("sid");
+    await getGlobals();
 
-    var overallResponse = await http.get(Uri.parse('https://demo.abills.net.ua:9443/api.cgi/user/$_uid'), headers: {"USERSID": _sid});
+    var overallResponse = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {"USERSID": sid});
     var overallInfo = jsonDecode(utf8.decode(overallResponse.bodyBytes));
 
     var deposit = double.parse(overallInfo['deposit']);
@@ -109,7 +107,7 @@ class _Pay extends State<Pay> {
                                 ],
                               ) : OutlinedButton(
                                 onPressed: () async {
-                                  var creditResponse = await http.post(Uri.parse("https://demo.abills.net.ua:9443/api.cgi/user/$_uid/credit"), headers: {"USERSID": _sid});
+                                  var creditResponse = await http.post(Uri.parse("$apiUrl/user/$uid/credit"), headers: {"USERSID": sid});
                                   var credit = jsonDecode(utf8.decode(creditResponse.bodyBytes));
 
                                   print(credit);
