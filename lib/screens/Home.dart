@@ -210,11 +210,13 @@ class _Home extends State<Home> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Послуга\n«${item['name']}»', style: TextStyle(fontSize: 20)),
+                            Expanded(
+                              child: Text('«${item['name']}»', style: TextStyle(fontSize: 20)),
+                            ),
                             Column(
                               children: [
                                 Text('АКТИВНО', style: TextStyle(color: Colors.green)),
-                                Switch(value: true, onChanged: (value) {}),
+                                // Switch(value: true, onChanged: (value) {}),
                               ],
                             ),
                           ],
