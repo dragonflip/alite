@@ -112,6 +112,10 @@ class _Pay extends State<Pay> {
 
                                   print(credit);
 
+                                  setState(() {
+                                    futureData = getData();
+                                  });
+
                                   showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
@@ -120,11 +124,7 @@ class _Pay extends State<Pay> {
                                       actions: [
                                         TextButton(
                                           onPressed: () => Navigator.pop(context),
-                                          child: Text('СКАСУВАТИ', style: TextStyle(color: Colors.black54)),
-                                        ),
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(context),
-                                          child: Text('ОФОРМИТИ'),
+                                          child: Text('ОК'),
                                         ),
                                       ],
                                     ),
