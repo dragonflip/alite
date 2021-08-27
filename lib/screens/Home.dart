@@ -160,7 +160,9 @@ class _Home extends State<Home> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Інтернет «${futureData['internet']['tpName']}»', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                            Expanded(
+                              child: Text('Інтернет «${futureData['internet']['tpName']}»', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                            ),
                           ],
                         ),
                         SizedBox(height: 8),
