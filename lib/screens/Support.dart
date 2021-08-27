@@ -115,7 +115,7 @@ class _Support extends State<Support> {
                 separatorBuilder: (_, index) => Divider(
                   height: 0,
                 ),
-                physics: BouncingScrollPhysics(),
+                physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
 
                 itemCount: data.length,
                 itemBuilder: (_, index) => ListTile(

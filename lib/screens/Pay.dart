@@ -61,7 +61,7 @@ class _Pay extends State<Pay> {
 
               return Scrollbar(
                 child: ListView(
-                  physics: BouncingScrollPhysics(),
+                  physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                   children: [
                     Card(
                       margin: EdgeInsets.all(8),

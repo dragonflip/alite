@@ -42,7 +42,7 @@ class _SupportDialog extends State<SupportDialog> {
           children: [
             Expanded(
               child: ListView(
-                physics: BouncingScrollPhysics(),
+                physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                 children: [
                   Chip(label: Text('12.07.2021')),
                   FutureBuilder(

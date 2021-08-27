@@ -85,7 +85,7 @@ class _Home extends State<Home> {
           },
           child: Scrollbar(
             child: ListView(
-              physics: BouncingScrollPhysics(),
+              physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
               children: [
                 Card(
                   margin: EdgeInsets.fromLTRB(8, 8, 8, 4),
