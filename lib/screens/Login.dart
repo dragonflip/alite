@@ -1,9 +1,12 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:async';
+
+import '../globals.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -116,6 +119,18 @@ class _Login extends State<Login> {
       );
     }
 
+    // TODO re-auth
+    // Timer.periodic(Duration(seconds: 60), (Timer timer) async {
+    //   await getGlobals();
+    //
+    //   if (sid == null) {
+    //     timer.cancel();
+    //   }
+    //
+    //   print("PERIOD");
+    //   print(timer.tick);
+    // });
+
     setState(() {
       _buttonDisabled = false;
     });
@@ -124,13 +139,13 @@ class _Login extends State<Login> {
   }
 
   Future getData() async {
-    final prefs = await SharedPreferences.getInstance();
+    await getGlobals();
 
     setState(() {
-      _login = prefs.getString('login');
-      _password = prefs.getString('password');
-      _url = prefs.getString('url');
-      _port = prefs.getString('port');
+      _login = login;
+      _password = password;
+      _url = url;
+      _port = port;
 
       if (_login != null && _password != null && _url != null && _port != null) {
         authorization();
@@ -169,7 +184,8 @@ class _Login extends State<Login> {
                     children: [
                       TextFormField(
                         cursorHeight: 22,
-                        controller: TextEditingController(text: _login),
+                        initialValue: _login,
+                        key: Key('login_$_login'),
                         decoration: InputDecoration(
                           labelText: 'Логін',
                           border: OutlineInputBorder(),
@@ -185,7 +201,8 @@ class _Login extends State<Login> {
 
                       TextFormField(
                         cursorHeight: 22,
-                        controller: TextEditingController(text: _password),
+                        initialValue: _password,
+                        key: Key('password_$_password'),
                         obscureText: !_showPassword,
                         decoration: InputDecoration(
                           labelText: 'Пароль',
@@ -215,7 +232,8 @@ class _Login extends State<Login> {
                             flex: 3,
                             child: TextFormField(
                               cursorHeight: 22,
-                              controller: TextEditingController(text: _url),
+                              initialValue: _url,
+                              key: Key('url_$_url'),
                               keyboardType: TextInputType.url,
                               decoration: InputDecoration(
                                 labelText: 'URL',
@@ -237,7 +255,8 @@ class _Login extends State<Login> {
                             flex: 1,
                             child: TextFormField(
                               cursorHeight: 22,
-                              controller: TextEditingController(text: _port),
+                              initialValue: _port,
+                              key: Key('port_$_port'),
                               keyboardType: TextInputType.number,
                               inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
                               maxLength: 5,
