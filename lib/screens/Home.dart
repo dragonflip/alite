@@ -122,8 +122,8 @@ class _Home extends State<Home> {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Text(double.parse(futureData['profile']['deposit']).toStringAsFixed(2), style: TextStyle(fontSize: 32, color: Colors.green)),
-                                    Text(' грн', style: TextStyle(fontSize: 18, color: Colors.green)),
+                                    Text(double.parse(futureData['profile']['deposit']).toStringAsFixed(2), style: TextStyle(fontSize: 32, color: double.parse(futureData['profile']['deposit']) > 0 ? Colors.green : Colors.red)),
+                                    Text(' грн', style: TextStyle(fontSize: 18, color: double.parse(futureData['profile']['deposit']) > 0 ? Colors.green : Colors.red)),
                                   ],
                                 ),
                                 SizedBox(height: 8),
