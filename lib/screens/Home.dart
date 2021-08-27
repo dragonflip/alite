@@ -43,6 +43,7 @@ class _Home extends State<Home> {
     var nextFee = jsonDecode(utf8.decode(nextFeeResponse.bodyBytes));
 
     print(nextFee);
+    print(internetResponse.body);
 
     var prefs = await SharedPreferences.getInstance();
     prefs.setString('tpId', internet['id']);

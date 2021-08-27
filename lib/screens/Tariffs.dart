@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'dart:convert';
 
 import '../globals.dart';
@@ -90,47 +91,33 @@ class _Tariffs extends State<Tariffs> {
                                 elevation: 0,
                               ),
                             ) : TextButton(
-                              onPressed: () {
-                                showDialog(
+                              onPressed: () async {
+                                final selectedDateRange = await showDateRangePicker(
                                   context: context,
-                                  builder: (_) => AlertDialog(
-                                    title: Text('Призупинити тариф'),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        TextField(
-                                          decoration: InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            labelText: 'Зупинити з - по',
-                                            hintText: 'Оберіть діапазон дати',
-                                            suffixIcon: Icon(Icons.calendar_today),
-                                          ),
-                                          readOnly: true,
-                                          showCursor: true,
-                                          onTap: () {
-                                            showDateRangePicker(
-                                              context: context,
-                                              firstDate: DateTime(2021),
-                                              lastDate: DateTime(2022),
-                                              initialDateRange: DateTimeRange(start: DateTime.now(), end: DateTime.now()),
-                                              initialEntryMode: DatePickerEntryMode.input,
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: Text('СКАСУВАТИ', style: TextStyle(color: Colors.black54)),
-                                      ),
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: Text('ПРИЗУПИНИТИ'),
-                                      ),
-                                    ],
-                                  ),
+                                  initialEntryMode: DatePickerEntryMode.input,
+
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime(DateTime.now().year + 1),
+                                  initialDateRange: DateTimeRange(start: DateTime.now(), end: DateTime.now().add(new Duration(days: 10))),
+
+                                  helpText: 'ПРИЗУПИНЕННЯ ТАРИФУ',
+                                  confirmText: 'ПРИЗУПИНИТИ',
+                                  saveText: 'ПРИЗУПИНИТИ',
                                 );
+
+                                if (selectedDateRange != null) {
+                                  final fromDate = DateFormat('yyyy-MM-dd').format(selectedDateRange.start);
+                                  final toDate = DateFormat('yyyy-MM-dd').format(selectedDateRange.end);
+                                  
+                                  var pauseInternetResponse = await http.post(Uri.parse('$apiUrl/user/$uid/internet/$tpId/holdup'), body: jsonEncode({'from_date': fromDate, 'to_date': toDate}), headers: {'USERSID': sid});
+                                  var pauseInternet = jsonDecode(utf8.decode(pauseInternetResponse.bodyBytes));
+
+                                  // var continueInternetResponse = await http.delete(Uri.parse('$apiUrl/user/$uid/internet/$tpId/holdup'), headers: {'USERSID': sid});
+                                  // print(continueInternetResponse.body);
+
+                                  print(fromDate + ' -> ' + toDate);
+                                  print(pauseInternet);
+                                }
                               },
                               child: Text('ПРИЗУПИНИТИ'),
                             ),

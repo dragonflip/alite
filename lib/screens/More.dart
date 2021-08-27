@@ -18,7 +18,6 @@ class More extends StatefulWidget {
 
 class _More extends State<More> {
   var futureData;
-
   var _loading = false;
 
   Future getData() async {

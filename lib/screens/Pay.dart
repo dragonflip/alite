@@ -18,7 +18,7 @@ var futureData;
 class _Pay extends State<Pay> {
   final _focusNode = FocusNode();
   final _controller = TextEditingController();
-  var _amount = '${(290 - 123.50).toStringAsFixed(2)}';
+  var _amount = (290 - 123.50).toStringAsFixed(2);
 
   Future getData() async {
     await getGlobals();
