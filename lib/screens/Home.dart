@@ -13,11 +13,13 @@ class Home extends StatefulWidget {
   _Home createState() => _Home();
 }
 
-var futureData;
+var futureData, lastUid;
 
 class _Home extends State<Home> {
   Future getData() async {
     await getGlobals();
+
+    lastUid = lastUid ?? uid;
 
     var overallInfo = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {'USERSID': sid});
     var personalInfo = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {'USERSID': sid});
@@ -63,7 +65,12 @@ class _Home extends State<Home> {
 
   @override
   void initState() {
+    if (lastUid != uid) {
+      futureData = null;
+      lastUid = uid;
+    }
     checkData();
+
     super.initState();
   }
 

@@ -39,7 +39,7 @@ class _Pay extends State<Pay> {
 
   @override
   void initState() {
-    futureData = futureData ?? getData();
+    futureData = getData();
     super.initState();
   }
 

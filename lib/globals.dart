@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-var uid, sid, url, port, login, password, tpId, apiUrl;
+var uid, sid, url, port, login, password, tpId;
+var apiUrl;
 
 Future getGlobals() async {
   final prefs = await SharedPreferences.getInstance();

@@ -112,11 +112,10 @@ class _Support extends State<Support> {
               final data = (snapshot.data as List<dynamic>).reversed.toList();
 
               return ListView.separated(
+                physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                 separatorBuilder: (_, index) => Divider(
                   height: 0,
                 ),
-                physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-
                 itemCount: data.length,
                 itemBuilder: (_, index) => ListTile(
                   onTap: () {
