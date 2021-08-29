@@ -144,8 +144,8 @@ class _Login extends State<Login> {
     setState(() {
       _login = login;
       _password = password;
-      _url = url;
-      _port = port;
+      _url = url ?? 'demo.abills.net.ua';
+      _port = port ?? '9443';
 
       if (_login != null && _password != null && _url != null && _port != null) {
         authorization();
