@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -14,11 +13,13 @@ class Tariffs extends StatefulWidget {
   _Tariffs createState() => _Tariffs();
 }
 
-var futureData;
+var futureData, lastUid;
 
 class _Tariffs extends State<Tariffs> {
   Future getData() async {
     await getGlobals();
+
+    lastUid = lastUid ?? uid;
 
     var internetInfo = await http.get(Uri.parse('$apiUrl/user/$uid/internet'), headers: {'USERSID': sid});
     var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes))[0];
@@ -26,14 +27,37 @@ class _Tariffs extends State<Tariffs> {
 
     var tariffsInfo = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/tariffs'), headers: {'USERSID': sid});
     var tariffs = jsonDecode(utf8.decode(tariffsInfo.bodyBytes));
-    tariffs.insert(0, internet);
 
-    return tariffs;
+    print(tariffs);
+
+    // Not allowed to change tariff
+    if (tariffs is Map && tariffs.containsKey('error') && tariffs['error'] == 4506) {
+      internet['error_message'] = 'not_allowed_to_change_tp';
+      return [internet];
+    } else {
+      tariffs.insert(0, internet);
+      return tariffs;
+    }
+  }
+
+  Future checkData() async {
+    return getData().then((value) {
+      if (!mounted) return;
+
+      setState(() {
+        futureData = value;
+      });
+    });
   }
 
   @override
   void initState() {
-    futureData = futureData ?? getData();
+    if (lastUid != uid) {
+      futureData = null;
+      lastUid = uid;
+    }
+    checkData();
+
     super.initState();
   }
 
@@ -42,97 +66,87 @@ class _Tariffs extends State<Tariffs> {
     return Scaffold(
       appBar: MyAppBar(),
       body: Container(
-        child: FutureBuilder(
-          future: futureData,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final data = snapshot.data as List<dynamic>;
+        child: futureData != null ? Scrollbar(
+          child: ListView.builder(
+            physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            itemCount: futureData.length,
+            itemBuilder: (_, index) => Column(
+              children: [
+                Card(
+                  margin: EdgeInsets.all(8),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
+                    child: Column(
+                      children: [
+                        Column(
+                          children: [
+                            if (futureData[index]['id'] == tpId) Icon(Icons.check_circle, color: Colors.green),
+                            Text('«${futureData[index]['name']}»', style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
+                          ],
+                        ),
+                        SizedBox(height: 8),
 
-              return Scrollbar(
-                child: ListView.builder(
-                  itemCount: data.length,
-                  physics: BouncingScrollPhysics(),
+                        ListTile(
+                          title: Text('${futureData[index]['speed']} Мб/c'),
+                          subtitle: Text('Швидкість'),
+                          leading: Icon(Icons.network_check),
+                        ),
+                        Divider(),
 
-                  itemBuilder: (_, index) => Card(
-                    margin: EdgeInsets.all(8),
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              data[index]['id'] == tpId ? Row(
-                                children: [
-                                  Icon(Icons.check_circle, color: Colors.green),
-                                  SizedBox(width: 8),
-                                ],
-                              ) : Wrap(),
-                              Text('Інтернет «${data[index]['name']}»', style: TextStyle(fontSize: 24)),
-                            ],
-                          ),
-                          SizedBox(height: 8),
-
-                          ListTile(
-                            title: Text('${data[index]['speed']} Мб/c'),
-                            subtitle: Text('Швидкість'),
-                            leading: Icon(Icons.network_check),
-                          ),
-                          Divider(),
-
-                          ListTile(
-                            title: Text('${data[index]['monthFee']} грн', style: TextStyle(fontSize: 18)),
-                            subtitle: Text('Ціна'),
-                            leading: Icon(Icons.attach_money),
-                            trailing: data[index]['id'] != tpId ? ElevatedButton(
-                              onPressed: () {},
-                              child: Text('ПІДКЛЮЧИТИ'),
-                              style: ElevatedButton.styleFrom(
-                                elevation: 0,
-                              ),
-                            ) : TextButton(
-                              onPressed: () async {
-                                final selectedDateRange = await showDateRangePicker(
-                                  context: context,
-                                  initialEntryMode: DatePickerEntryMode.input,
-
-                                  firstDate: DateTime.now(),
-                                  lastDate: DateTime(DateTime.now().year + 1),
-                                  initialDateRange: DateTimeRange(start: DateTime.now(), end: DateTime.now().add(new Duration(days: 10))),
-
-                                  helpText: 'ПРИЗУПИНЕННЯ ТАРИФУ',
-                                  confirmText: 'ПРИЗУПИНИТИ',
-                                  saveText: 'ПРИЗУПИНИТИ',
-                                );
-
-                                if (selectedDateRange != null) {
-                                  final fromDate = DateFormat('yyyy-MM-dd').format(selectedDateRange.start);
-                                  final toDate = DateFormat('yyyy-MM-dd').format(selectedDateRange.end);
-                                  
-                                  var pauseInternetResponse = await http.post(Uri.parse('$apiUrl/user/$uid/internet/$tpId/holdup'), body: jsonEncode({'from_date': fromDate, 'to_date': toDate}), headers: {'USERSID': sid});
-                                  var pauseInternet = jsonDecode(utf8.decode(pauseInternetResponse.bodyBytes));
-
-                                  // var continueInternetResponse = await http.delete(Uri.parse('$apiUrl/user/$uid/internet/$tpId/holdup'), headers: {'USERSID': sid});
-                                  // print(continueInternetResponse.body);
-
-                                  print(fromDate + ' -> ' + toDate);
-                                  print(pauseInternet);
-                                }
-                              },
-                              child: Text('ПРИЗУПИНИТИ'),
+                        ListTile(
+                          title: Text('${futureData[index]['monthFee']} грн', style: TextStyle(fontSize: 18)),
+                          subtitle: Text('Ціна'),
+                          leading: Icon(Icons.attach_money),
+                          trailing: futureData[index]['id'] != tpId ? ElevatedButton(
+                            onPressed: () {},
+                            child: Text('ПІДКЛЮЧИТИ'),
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
                             ),
+                          ) : TextButton(
+                            onPressed: () async {
+                              final selectedDateRange = await showDateRangePicker(
+                                context: context,
+                                initialEntryMode: DatePickerEntryMode.input,
+
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(DateTime.now().year + 1),
+                                initialDateRange: DateTimeRange(start: DateTime.now(), end: DateTime.now().add(new Duration(days: 10))),
+
+                                helpText: 'ПРИЗУПИНЕННЯ ТАРИФУ',
+                                confirmText: 'ПРИЗУПИНИТИ',
+                                saveText: 'ПРИЗУПИНИТИ',
+                              );
+
+                              if (selectedDateRange != null) {
+                                final fromDate = DateFormat('yyyy-MM-dd').format(selectedDateRange.start);
+                                final toDate = DateFormat('yyyy-MM-dd').format(selectedDateRange.end);
+
+                                var pauseInternetResponse = await http.post(Uri.parse('$apiUrl/user/$uid/internet/$tpId/holdup'), body: jsonEncode({'from_date': fromDate, 'to_date': toDate}), headers: {'USERSID': sid});
+                                var pauseInternet = jsonDecode(utf8.decode(pauseInternetResponse.bodyBytes));
+
+                                // var continueInternetResponse = await http.delete(Uri.parse('$apiUrl/user/$uid/internet/$tpId/holdup'), headers: {'USERSID': sid});
+                                // print(continueInternetResponse.body);
+
+                                print(fromDate + ' -> ' + toDate);
+                                print(pauseInternet);
+                              }
+                            },
+                            child: Text('ПРИЗУПИНИТИ'),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              );
-            } else {
-              return LinearProgressIndicator();
-            }
-          },
-        ),
+                if (futureData[index]['error_message'] == 'not_allowed_to_change_tp') Padding(
+                  padding: EdgeInsets.only(top: 16),
+                  child: Text("Ви не можете змінити тариф. Адміністратор заборонив цю дію.", style: TextStyle(fontSize: 20, color: Colors.black54), textAlign: TextAlign.center),
+                ),
+              ],
+            ),
+          ),
+        ) : LinearProgressIndicator(),
       ),
       bottomNavigationBar: MyBottomNavigationBar(),
     );
