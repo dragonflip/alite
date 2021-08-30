@@ -31,7 +31,7 @@ class _Tariffs extends State<Tariffs> {
     print(tariffs);
 
     // Not allowed to change tariff
-    if (tariffs is Map && tariffs.containsKey('error') && tariffs['error'] == 4506) {
+    if (tariffs is Map && tariffs.containsKey('error')) {
       internet['error_message'] = 'not_allowed_to_change_tp';
       return [internet];
     } else {
