@@ -135,7 +135,9 @@ class _Home extends State<Home> {
                                   ],
                                 ),
                                 SizedBox(height: 8),
-                                Text('${DateFormat('dd.MM.yyyy').format(DateTime.parse(futureData['nextFee']['abonDate']))} буде знято ${futureData['nextFee']['sum']} грн'),
+                                futureData['nextFee'].containsKey('abonDate')
+                                  ? Text('${DateFormat('dd.MM.yyyy').format(DateTime.parse(futureData['nextFee']['abonDate']))} буде знято ${futureData['nextFee']['sum']} грн')
+                                  : Text(futureData['nextFee']['warning']),
                                 SizedBox(height: 16),
 
                                 ElevatedButton(
