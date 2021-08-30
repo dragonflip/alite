@@ -76,8 +76,8 @@ class _Pay extends State<Pay> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text(double.parse(data['deposit']).toStringAsFixed(2), style: TextStyle(fontSize: 20, color: Colors.green)),
-                                  Text(' грн', style: TextStyle(fontSize: 14, color: Colors.green)),
+                                  Text(double.parse(data['deposit']).toStringAsFixed(2), style: TextStyle(fontSize: 20, color: double.parse(data['deposit']) > 0 ? Colors.green : Colors.red)),
+                                  Text(' грн', style: TextStyle(fontSize: 14, color: double.parse(data['deposit']) > 0 ? Colors.green : Colors.red)),
                                 ],
                               ),
                             ),
