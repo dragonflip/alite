@@ -18,23 +18,37 @@ var futureData;
 class _Pay extends State<Pay> {
   final _focusNode = FocusNode();
   final _controller = TextEditingController();
-  var _amount = (290 - 123.50).toStringAsFixed(2);
+  var _amount;
 
   Future getData() async {
     await getGlobals();
 
     var overallResponse = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {'USERSID': sid});
     var overallInfo = jsonDecode(utf8.decode(overallResponse.bodyBytes));
+    overallInfo['deposit'] = double.parse(overallInfo['deposit']);
+    overallInfo['credit'] = double.parse(overallInfo['credit']);
 
-    var deposit = double.parse(overallInfo['deposit']);
+    var serviceCostResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/warnings'), headers: {'USERSID': sid});
+    var serviceCost = jsonDecode(utf8.decode(serviceCostResponse.bodyBytes));
 
-    if (deposit >= 123.50) {
-      _amount = '290.00';
+    var creditInfoResponse = await http.get(Uri.parse('$apiUrl/user/$uid/credit'), headers: {"USERSID": sid});
+    var creditInfo = jsonDecode(utf8.decode(creditInfoResponse.bodyBytes));
+
+    print(creditInfo);
+
+    // TODO remove when API send sum even error
+    if (serviceCost.containsKey('sum')) {
+      if (overallInfo['deposit'] >= serviceCost['sum']) {
+        _amount = serviceCost['sum'].toStringAsFixed(2);
+      } else {
+        _amount = (serviceCost['sum'] - overallInfo['deposit']).toStringAsFixed(2);
+      }
     } else {
-      _amount = (deposit - 123.50).toStringAsFixed(2);
+      serviceCost['sum'] = 0;
+      _amount = '0';
     }
 
-    return overallInfo;
+    return {'overallInfo': overallInfo, 'creditInfo': creditInfo, 'serviceCost': serviceCost};
   }
 
   @override
@@ -76,8 +90,8 @@ class _Pay extends State<Pay> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text(double.parse(data['deposit']).toStringAsFixed(2), style: TextStyle(fontSize: 20, color: double.parse(data['deposit']) > 0 ? Colors.green : Colors.red)),
-                                  Text(' грн', style: TextStyle(fontSize: 14, color: double.parse(data['deposit']) > 0 ? Colors.green : Colors.red)),
+                                  Text(data['overallInfo']['deposit'].toStringAsFixed(2), style: TextStyle(fontSize: 20, color: data['overallInfo']['deposit'] > 0 ? Colors.green : Colors.red)),
+                                  Text(' грн', style: TextStyle(fontSize: 14, color: data['overallInfo']['deposit'] > 0 ? Colors.green : Colors.red)),
                                 ],
                               ),
                             ),
@@ -89,42 +103,62 @@ class _Pay extends State<Pay> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text('290.00', style: TextStyle(fontSize: 20)),
+                                  Text(data['serviceCost']['sum'].toString(), style: TextStyle(fontSize: 20)),
                                   Text(' грн', style: TextStyle(fontSize: 14)),
                                 ],
                               ),
                             ),
                             SizedBox(height: 8),
-                            ListTile(
+                            if (data['creditInfo']['error'] != 4303) ListTile(
                               title: Text('Кредит', style: TextStyle(fontSize: 18)),
                               leading: Icon(Icons.account_balance),
-                              trailing: double.parse(data['credit']) > 0 ? Row(
+                              trailing: data['overallInfo']['credit'] > 0 ? Row(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text(double.parse(data['credit']).toStringAsFixed(2), style: TextStyle(fontSize: 20)),
+                                  Text(data['overallInfo']['credit'].toStringAsFixed(2), style: TextStyle(fontSize: 20)),
                                   Text(' грн', style: TextStyle(fontSize: 14)),
                                 ],
                               ) : OutlinedButton(
                                 onPressed: () async {
-                                  var creditResponse = await http.post(Uri.parse('$apiUrl/user/$uid/credit'), headers: {'USERSID': sid});
-                                  var credit = jsonDecode(utf8.decode(creditResponse.bodyBytes));
-
-                                  print(credit);
-
-                                  setState(() {
-                                    futureData = getData();
-                                  });
-
                                   showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
-                                      title: Text('Кредит оформлено'),
-                                      content: Text('Вам надано кредит на суму ${credit['creditSum']} на ${credit['creditDays'] ?? 0} днів'),
+                                      title: Text('Деталі кредиту'),
+                                      content: Text('Ви можете отримати кредит на суму ${data['creditInfo']['creditSum']} грн на ${data['creditInfo']['creditDays']} днів'),
                                       actions: [
                                         TextButton(
                                           onPressed: () => Navigator.pop(context),
-                                          child: Text('ОК'),
+                                          child: Text('СКАСУВАТИ', style: TextStyle(color: Colors.black54)),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            Navigator.pop(context);
+
+                                            var creditResponse = await http.post(Uri.parse('$apiUrl/user/$uid/credit'), headers: {'USERSID': sid});
+                                            var credit = jsonDecode(utf8.decode(creditResponse.bodyBytes));
+
+                                            print(credit);
+
+                                            showDialog(
+                                              context: context,
+                                              builder: (_) => AlertDialog(
+                                                title: Text('Кредит оформлено'),
+                                                content: Text('Вам надано кредит на суму ${credit['creditSum']} грн на ${credit['creditDays']} днів'),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () => Navigator.pop(context),
+                                                    child: Text('ОК'),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+
+                                            setState(() {
+                                              futureData = getData();
+                                            });
+                                          },
+                                          child: Text('ОТРИМАТИ'),
                                         ),
                                       ],
                                     ),
@@ -178,10 +212,10 @@ class _Pay extends State<Pay> {
                                 ActionChip(
                                   onPressed: () {
                                     setState(() {
-                                      _amount = (290).toStringAsFixed(2);
+                                      _amount = data['serviceCost']['sum'].toStringAsFixed(2);
                                     });
                                   },
-                                  label: Text((290).toStringAsFixed(2)),
+                                  label: Text(data['serviceCost']['sum'].toStringAsFixed(2)),
                                   avatar: Icon(Icons.looks_one, color: Colors.red),
                                   tooltip: 'Сума поповнення на 1 місяць',
                                   backgroundColor: Colors.grey[200],
@@ -190,10 +224,10 @@ class _Pay extends State<Pay> {
                                 ActionChip(
                                   onPressed: () {
                                     setState(() {
-                                      _amount = (290 * 3).toStringAsFixed(2);
+                                      _amount = (data['serviceCost']['sum'] * 3).toStringAsFixed(2);
                                     });
                                   },
-                                  label: Text((290 * 3).toStringAsFixed(2)),
+                                  label: Text((data['serviceCost']['sum'] * 3).toStringAsFixed(2)),
                                   avatar: Icon(Icons.looks_3, color: Colors.red),
                                   tooltip: 'Сума поповнення на 3 місяці',
                                   backgroundColor: Colors.grey[200],
@@ -202,10 +236,10 @@ class _Pay extends State<Pay> {
                                 ActionChip(
                                   onPressed: () {
                                     setState(() {
-                                      _amount = (290 * 6).toStringAsFixed(2);
+                                      _amount = (data['serviceCost']['sum'] * 6).toStringAsFixed(2);
                                     });
                                   },
-                                  label: Text((290 * 6).toStringAsFixed(2)),
+                                  label: Text((data['serviceCost']['sum'] * 6).toStringAsFixed(2)),
                                   avatar: Icon(Icons.looks_6, color: Colors.red),
                                   tooltip: 'Сума поповнення на 6 місяців',
                                   backgroundColor: Colors.grey[200],
