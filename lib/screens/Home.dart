@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 import '../globals.dart';
 
@@ -134,8 +135,7 @@ class _Home extends State<Home> {
                                   ],
                                 ),
                                 SizedBox(height: 8),
-                                // Text('15.08.2021 буде знято 290 грн'), // TODO output like this
-                                Text(futureData['nextFee']['warning']),
+                                Text('${DateFormat('dd.MM.yyyy').format(DateTime.parse(futureData['nextFee']['abonDate']))} буде знято ${futureData['nextFee']['sum']} грн'),
                                 SizedBox(height: 16),
 
                                 ElevatedButton(
