@@ -125,11 +125,27 @@ class _Tariffs extends State<Tariffs> {
 
                                 await checkSession();
 
+                                var unpauseInternetResponse = await http.delete(Uri.parse('$apiUrl/user/$uid/internet/$tpId/holdup'), headers: {'USERSID': sid});
+                                print(unpauseInternetResponse.body + '\n\n');
+
                                 var pauseInternetResponse = await http.post(Uri.parse('$apiUrl/user/$uid/internet/$tpId/holdup'), body: jsonEncode({'from_date': fromDate, 'to_date': toDate}), headers: {'USERSID': sid});
                                 var pauseInternet = jsonDecode(utf8.decode(pauseInternetResponse.bodyBytes));
 
-                                // var continueInternetResponse = await http.delete(Uri.parse('$apiUrl/user/$uid/internet/$tpId/holdup'), headers: {'USERSID': sid});
-                                // print(continueInternetResponse.body);
+                                if (pauseInternet['delIds'] == '') {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text('Помилка'),
+                                      content: Text('Ви не можете призупинити послугу. Адміністратор заборонив цю дію.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: Text('ОК'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
 
                                 print(fromDate + ' -> ' + toDate);
                                 print(pauseInternet);
