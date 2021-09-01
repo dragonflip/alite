@@ -9,6 +9,9 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final route = ModalRoute.of(context)?.settings.name;
+    final showBackButton = route != '/' && route != '/tariffs' && route != '/profile' && route != '/more';
+
     return AppBar(
       title: this.title == 'ABillS' ? RichText(
         text: TextSpan(
@@ -27,6 +30,9 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.white,
       elevation: 1,
       iconTheme: IconThemeData(color: Colors.black54),
+
+      automaticallyImplyLeading: false,
+      leading: showBackButton ? Icon(Icons.arrow_back) : Wrap(),
 
       actions: [
         this.title == 'ABillS' ? IconButton(

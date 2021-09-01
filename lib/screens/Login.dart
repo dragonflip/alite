@@ -127,7 +127,6 @@ class _Login extends State<Login> {
     //     timer.cancel();
     //   }
     //
-    //   print("PERIOD");
     //   print(timer.tick);
     // });
 

@@ -31,7 +31,7 @@ class _Pay extends State<Pay> {
     var serviceCostResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/warnings'), headers: {'USERSID': sid});
     var serviceCost = jsonDecode(utf8.decode(serviceCostResponse.bodyBytes));
 
-    var creditInfoResponse = await http.get(Uri.parse('$apiUrl/user/$uid/credit'), headers: {"USERSID": sid});
+    var creditInfoResponse = await http.get(Uri.parse('$apiUrl/user/$uid/credit'), headers: {'USERSID': sid});
     var creditInfo = jsonDecode(utf8.decode(creditInfoResponse.bodyBytes));
 
     print(creditInfo);

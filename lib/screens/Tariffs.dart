@@ -141,7 +141,7 @@ class _Tariffs extends State<Tariffs> {
                 ),
                 if (futureData[index]['error_message'] == 'not_allowed_to_change_tp') Padding(
                   padding: EdgeInsets.only(top: 16),
-                  child: Text("Ви не можете змінити тариф. Адміністратор заборонив цю дію.", style: TextStyle(fontSize: 20, color: Colors.black54), textAlign: TextAlign.center),
+                  child: Text('Ви не можете змінити тариф. Адміністратор заборонив цю дію.', style: TextStyle(fontSize: 20, color: Colors.black54), textAlign: TextAlign.center),
                 ),
               ],
             ),

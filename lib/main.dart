@@ -46,17 +46,25 @@ class MyApp extends StatelessWidget {
       routes: {
         'login': (context) => Login(),
 
-        '/': (context) => Home(),
-        '/tariffs': (context) => Tariffs(),
-        '/profile': (context) => Profile(),
-        '/more': (context) => More(),
-
         '/notifications': (context) => Notifications(),
         '/support': (context) => Support(),
         '/support_dialog': (context) => SupportDialog(),
         '/pay': (context) => Pay(),
         '/about': (context) => About(),
         '/settings': (context) => Settings(),
+      },
+      // Disabling animation for BottomNavigationBar
+      onGenerateRoute: (settings) {
+        if (settings.name == '/' || settings.name == '/tariffs' || settings.name == '/profile' || settings.name == '/more') {
+          final Map routes = {'/': Home(), '/tariffs': Tariffs(), '/profile': Profile(), '/more': More()};
+
+          return PageRouteBuilder(
+            settings: settings,
+            pageBuilder: (context, animation1, animation2) => routes[settings.name],
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          );
+        }
       },
     );
   }
