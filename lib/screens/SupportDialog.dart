@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../globals.dart';
+import '../global.dart';
 
 import '../widgets/MyAppBar.dart';
 
@@ -16,6 +16,7 @@ class _SupportDialog extends State<SupportDialog> {
 
   Future getData() async {
     await getGlobals();
+    await checkSession();
 
     var messages = await http.get(Uri.parse('$apiUrl/msgs/186255'), headers: {'KEY': 'testAPI_KEY12'});
     print(utf8.decode(messages.bodyBytes));

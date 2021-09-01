@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
-import '../globals.dart';
+import '../global.dart';
 
 import '../widgets/MyAppBar.dart';
 
@@ -17,6 +17,7 @@ class _Support extends State<Support> {
 
   Future getData() async {
     await getGlobals();
+    await checkSession();
 
     var dialogs = await http.post(Uri.parse('$apiUrl/msgs/list'), body: jsonEncode({'uid': uid}), headers: {'KEY': 'testAPI_KEY12'});
 

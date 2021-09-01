@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
-import '../globals.dart';
+import '../global.dart';
 
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
@@ -18,6 +18,7 @@ var futureData, lastUid;
 class _Profile extends State<Profile> {
   Future getData() async {
     await getGlobals();
+    await checkSession();
 
     lastUid = lastUid ?? uid;
 

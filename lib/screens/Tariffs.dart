@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
-import '../globals.dart';
+import '../global.dart';
 
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
@@ -18,6 +18,7 @@ var futureData, lastUid;
 class _Tariffs extends State<Tariffs> {
   Future getData() async {
     await getGlobals();
+    await checkSession();
 
     lastUid = lastUid ?? uid;
 
@@ -121,6 +122,8 @@ class _Tariffs extends State<Tariffs> {
                               if (selectedDateRange != null) {
                                 final fromDate = DateFormat('yyyy-MM-dd').format(selectedDateRange.start);
                                 final toDate = DateFormat('yyyy-MM-dd').format(selectedDateRange.end);
+
+                                await checkSession();
 
                                 var pauseInternetResponse = await http.post(Uri.parse('$apiUrl/user/$uid/internet/$tpId/holdup'), body: jsonEncode({'from_date': fromDate, 'to_date': toDate}), headers: {'USERSID': sid});
                                 var pauseInternet = jsonDecode(utf8.decode(pauseInternetResponse.bodyBytes));

@@ -6,7 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../globals.dart';
+import '../global.dart';
 
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyBottomNavigationBar.dart';
@@ -122,6 +122,8 @@ class _More extends State<More> {
                             setState(() {
                               _loading = true;
                             });
+
+                            await checkSession();
 
                             var versionResponse = await http.get(Uri.parse('$apiUrl/version'), headers: {'KEY': 'testAPI_KEY12'});
                             var version = jsonDecode(utf8.decode(versionResponse.bodyBytes));

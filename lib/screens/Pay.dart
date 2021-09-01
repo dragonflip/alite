@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../globals.dart';
+import '../global.dart';
 
 import '../widgets/MyAppBar.dart';
 
@@ -22,6 +22,7 @@ class _Pay extends State<Pay> {
 
   Future getData() async {
     await getGlobals();
+    await checkSession();
 
     var overallResponse = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {'USERSID': sid});
     var overallInfo = jsonDecode(utf8.decode(overallResponse.bodyBytes));
@@ -135,6 +136,8 @@ class _Pay extends State<Pay> {
                                         TextButton(
                                           onPressed: () async {
                                             Navigator.pop(context);
+
+                                            await checkSession();
 
                                             var creditResponse = await http.post(Uri.parse('$apiUrl/user/$uid/credit'), headers: {'USERSID': sid});
                                             var credit = jsonDecode(utf8.decode(creditResponse.bodyBytes));

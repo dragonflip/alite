@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 
-import '../globals.dart';
+import '../global.dart';
 
 class Login extends StatefulWidget {
   @override
