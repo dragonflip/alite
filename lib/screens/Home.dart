@@ -194,7 +194,7 @@ class _Home extends State<Home> {
                           ],
                         ),
                         ListTile(
-                          title: Text('${futureData['internet']['speed']} Мб/с'),
+                          title: Text('${futureData['internet']['speed'] ?? 'needAPI'} Мб/с'),
                           subtitle: Text('Швидкість'),
                           leading: Icon(Icons.network_check),
                         ),

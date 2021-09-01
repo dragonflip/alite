@@ -103,7 +103,8 @@ class _Pay extends State<Pay> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text(data['serviceCost']['sum'].toString(), style: TextStyle(fontSize: 20)),
+                                  // TODO remove condition when API will be completed
+                                  Text(data['serviceCost']['sum'] == 0 ? 'needApi' : data['serviceCost']['sum'], style: TextStyle(fontSize: 20)),
                                   Text(' грн', style: TextStyle(fontSize: 14)),
                                 ],
                               ),

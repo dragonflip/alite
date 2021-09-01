@@ -3,7 +3,7 @@ description: ABillS Lite
 
 publish_to: 'none'
 
-version: 0.12.4
+version: 0.12.5
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
