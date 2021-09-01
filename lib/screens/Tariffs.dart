@@ -99,7 +99,96 @@ class _Tariffs extends State<Tariffs> {
                           subtitle: Text('Ціна'),
                           leading: Icon(Icons.attach_money),
                           trailing: futureData[index]['id'] != tpId ? ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              var changeType = 0;
+                              var newTariffId = futureData[index]['id'];
+                              var changeDate;
+
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text('Зміна тарифу'),
+                                  content: StatefulBuilder(
+                                    builder: (context, setState) => Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        RadioListTile(
+                                          title: Text('Одразу змінити'),
+                                          value: 0,
+                                          groupValue: changeType,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              changeType = value as int;
+                                            });
+                                          },
+                                        ),
+                                        RadioListTile(
+                                          title: Text('Змінити на наступний обліковий період'),
+                                          value: 1,
+                                          groupValue: changeType,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              changeType = value as int;
+                                            });
+                                          },
+                                        ),
+                                        RadioListTile(
+                                          title: Text('Вказати дату зміни'),
+                                          value: 2,
+                                          groupValue: changeType,
+                                          subtitle: Text(changeDate ?? ''),
+                                          onChanged: (value) async {
+                                            setState(() {
+                                              changeType = value as int;
+                                            });
+
+                                            final selectedDate = await showDatePicker(
+                                              context: context,
+                                              initialEntryMode: DatePickerEntryMode.input,
+
+                                              firstDate: DateTime.now(),
+                                              lastDate: DateTime(DateTime.now().year + 1),
+                                              initialDate: DateTime.now().add(new Duration(days: 10)),
+                                            );
+
+                                            setState(() {
+                                              if (selectedDate != null) {
+                                                changeDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+                                              } else {
+                                                changeType = 0;
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text('СКАСУВАТИ', style: TextStyle(color: Colors.black54)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        await checkSession();
+
+                                        var changeTariffResponse = await http.put(Uri.parse('$apiUrl/user/$uid/internet/$tpId'), body: jsonEncode({'tp_id': newTariffId, 'period': changeType, 'date': changeDate}), headers: {'USERSID': sid});
+                                        var changeTariff = jsonDecode(utf8.decode(changeTariffResponse.bodyBytes));
+
+                                        print(changeType);
+                                        print(changeDate);
+                                        print(newTariffId);
+                                        print(changeTariff);
+
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('ЗМІНИТИ'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                             child: Text('ПІДКЛЮЧИТИ'),
                             style: ElevatedButton.styleFrom(
                               elevation: 0,
