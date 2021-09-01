@@ -31,9 +31,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 1,
       iconTheme: IconThemeData(color: Colors.black54),
 
-      automaticallyImplyLeading: false,
-      leading: showBackButton ? Icon(Icons.arrow_back) : Wrap(),
-
+      automaticallyImplyLeading: showBackButton,
       actions: [
         this.title == 'ABillS' ? IconButton(
           onPressed: () {
