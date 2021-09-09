@@ -17,21 +17,37 @@ var futureData, lastUid;
 
 class _Profile extends State<Profile> {
   Future getData() async {
-    await getGlobals();
-    await checkSession();
+    try {
+      await getGlobals();
+      await checkSession();
 
-    lastUid = lastUid ?? uid;
+      lastUid = lastUid ?? uid;
 
-    var profileResponse = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {'USERSID': sid});
-    var profile = jsonDecode(utf8.decode(profileResponse.bodyBytes));
+      var profileResponse = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {'USERSID': sid});
+      var profile = jsonDecode(utf8.decode(profileResponse.bodyBytes));
 
-    print(profileResponse.body);
+      print(profileResponse.body);
 
-    profile['phone'] = profile['phone'].isNotEmpty ? profile['phone'][0].trim() : 'Не вказано';
-    profile['email'] = profile['email'].isNotEmpty ? profile['email'][0].trim() : 'Не вказано';
-    profile['addressFull'] = profile.containsKey('addressFull') ? profile['addressFull'].trim() : 'Не вказано';
+      profile['phone'] = profile['phone'].isNotEmpty ? profile['phone'][0].trim() : 'Не вказано';
+      profile['email'] = profile['email'].isNotEmpty ? profile['email'][0].trim() : 'Не вказано';
+      profile['addressFull'] = profile.containsKey('addressFull') ? profile['addressFull'].trim() : 'Не вказано';
 
-    return profile;
+      return profile;
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Помилка'),
+          content: Text(e.toString()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('ОК'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Future checkData() async {

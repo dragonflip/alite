@@ -21,35 +21,51 @@ class _Pay extends State<Pay> {
   var _amount;
 
   Future getData() async {
-    await getGlobals();
-    await checkSession();
+    try {
+      await getGlobals();
+      await checkSession();
 
-    var overallResponse = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {'USERSID': sid});
-    var overallInfo = jsonDecode(utf8.decode(overallResponse.bodyBytes));
-    overallInfo['deposit'] = double.parse(overallInfo['deposit']);
-    overallInfo['credit'] = double.parse(overallInfo['credit']);
+      var overallResponse = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {'USERSID': sid});
+      var overallInfo = jsonDecode(utf8.decode(overallResponse.bodyBytes));
+      overallInfo['deposit'] = double.parse(overallInfo['deposit']);
+      overallInfo['credit'] = double.parse(overallInfo['credit']);
 
-    var serviceCostResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/warnings'), headers: {'USERSID': sid});
-    var serviceCost = jsonDecode(utf8.decode(serviceCostResponse.bodyBytes));
+      var serviceCostResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/warnings'), headers: {'USERSID': sid});
+      var serviceCost = jsonDecode(utf8.decode(serviceCostResponse.bodyBytes));
 
-    var creditInfoResponse = await http.get(Uri.parse('$apiUrl/user/$uid/credit'), headers: {'USERSID': sid});
-    var creditInfo = jsonDecode(utf8.decode(creditInfoResponse.bodyBytes));
+      var creditInfoResponse = await http.get(Uri.parse('$apiUrl/user/$uid/credit'), headers: {'USERSID': sid});
+      var creditInfo = jsonDecode(utf8.decode(creditInfoResponse.bodyBytes));
 
-    print(creditInfo);
+      print(creditInfo);
 
-    // TODO remove when API send sum even error
-    if (serviceCost.containsKey('sum')) {
-      if (overallInfo['deposit'] >= serviceCost['sum']) {
-        _amount = serviceCost['sum'].toStringAsFixed(2);
+      // TODO remove when API send sum even error
+      if (serviceCost.containsKey('sum')) {
+        if (overallInfo['deposit'] >= serviceCost['sum']) {
+          _amount = serviceCost['sum'].toStringAsFixed(2);
+        } else {
+          _amount = (serviceCost['sum'] - overallInfo['deposit']).toStringAsFixed(2);
+        }
       } else {
-        _amount = (serviceCost['sum'] - overallInfo['deposit']).toStringAsFixed(2);
+        serviceCost['sum'] = 0;
+        _amount = '0';
       }
-    } else {
-      serviceCost['sum'] = 0;
-      _amount = '0';
-    }
 
-    return {'overallInfo': overallInfo, 'creditInfo': creditInfo, 'serviceCost': serviceCost};
+      return {'overallInfo': overallInfo, 'creditInfo': creditInfo, 'serviceCost': serviceCost};
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Помилка'),
+          content: Text(e.toString()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('ОК'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override

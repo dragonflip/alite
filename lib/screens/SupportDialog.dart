@@ -15,13 +15,29 @@ class _SupportDialog extends State<SupportDialog> {
   var futureData;
 
   Future getData() async {
-    await getGlobals();
-    await checkSession();
+    try {
+      await getGlobals();
+      await checkSession();
 
-    var messages = await http.get(Uri.parse('$apiUrl/msgs/186255'), headers: {'KEY': 'testAPI_KEY12'});
-    print(utf8.decode(messages.bodyBytes));
+      var messages = await http.get(Uri.parse('$apiUrl/msgs/186255'), headers: {'KEY': 'testAPI_KEY12'});
+      print(utf8.decode(messages.bodyBytes));
 
-    return jsonDecode(utf8.decode(messages.bodyBytes));
+      return jsonDecode(utf8.decode(messages.bodyBytes));
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Помилка'),
+          content: Text(e.toString()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('ОК'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override

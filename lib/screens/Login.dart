@@ -91,7 +91,7 @@ class _Login extends State<Login> {
           context: context,
           builder: (_) => AlertDialog(
             title: Text('Помилка'),
-            content: Text('Невірний порт'),
+            content: Text('Невірний порт або недійсний SSL сертифікат'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -118,17 +118,6 @@ class _Login extends State<Login> {
         ),
       );
     }
-
-    // TODO re-auth
-    // Timer.periodic(Duration(seconds: 60), (Timer timer) async {
-    //   await getGlobals();
-    //
-    //   if (sid == null) {
-    //     timer.cancel();
-    //   }
-    //
-    //   print(timer.tick);
-    // });
 
     setState(() {
       _buttonDisabled = false;

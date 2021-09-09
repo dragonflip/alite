@@ -17,27 +17,43 @@ var futureData, lastUid;
 
 class _Tariffs extends State<Tariffs> {
   Future getData() async {
-    await getGlobals();
-    await checkSession();
+    try {
+      await getGlobals();
+      await checkSession();
 
-    lastUid = lastUid ?? uid;
+      lastUid = lastUid ?? uid;
 
-    var internetInfo = await http.get(Uri.parse('$apiUrl/user/$uid/internet'), headers: {'USERSID': sid});
-    var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes))[0];
-    internet['name'] = internet['tpName'];
+      var internetInfo = await http.get(Uri.parse('$apiUrl/user/$uid/internet'), headers: {'USERSID': sid});
+      var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes))[0];
+      internet['name'] = internet['tpName'];
 
-    var tariffsInfo = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/tariffs'), headers: {'USERSID': sid});
-    var tariffs = jsonDecode(utf8.decode(tariffsInfo.bodyBytes));
+      var tariffsInfo = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/tariffs'), headers: {'USERSID': sid});
+      var tariffs = jsonDecode(utf8.decode(tariffsInfo.bodyBytes));
 
-    print(tariffs);
+      print(tariffs);
 
-    // Not allowed to change tariff
-    if (tariffs is Map && tariffs.containsKey('error')) {
-      internet['error_message'] = 'not_allowed_to_change_tp';
-      return [internet];
-    } else {
-      tariffs.insert(0, internet);
-      return tariffs;
+      // Not allowed to change tariff
+      if (tariffs is Map && tariffs.containsKey('error')) {
+        internet['error_message'] = 'not_allowed_to_change_tp';
+        return [internet];
+      } else {
+        tariffs.insert(0, internet);
+        return tariffs;
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Помилка'),
+          content: Text(e.toString()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('ОК'),
+            ),
+          ],
+        ),
+      );
     }
   }
 

@@ -118,29 +118,32 @@ class _More extends State<More> {
                         final data = snapshot.data as Map<String, dynamic>;
 
                         return ListTile(
-                          onLongPress: () async {
-                            setState(() {
-                              _loading = true;
-                            });
-
-                            await checkSession();
-
-                            var versionResponse = await http.get(Uri.parse('$apiUrl/version'), headers: {'KEY': 'testAPI_KEY12'});
-                            var version = jsonDecode(utf8.decode(versionResponse.bodyBytes));
-
-                            Clipboard.setData(ClipboardData(text: 'ABillS lite\n'
-                                'Версія додатку: ${data['appVersion']}\n'
-                                'Версія білінгу: ${version['version']}\n'
-                                'Версія API: ${version['apiVersion']}'));
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Докладнішу інформацію скопійовано')));
-
-                            setState(() {
-                              _loading = false;
-                            });
-                          },
                           title: Text('Версія ${data['appVersion']}'),
                           leading: Icon(Icons.code),
-                          trailing: _loading ? CircularProgressIndicator() : Wrap(),
+                          trailing: !_loading ? IconButton(
+                            onPressed: () async {
+                              setState(() {
+                                _loading = true;
+                              });
+
+                              await checkSession();
+
+                              var versionResponse = await http.get(Uri.parse('$apiUrl/version'), headers: {'KEY': 'testAPI_KEY12'});
+                              var version = jsonDecode(utf8.decode(versionResponse.bodyBytes));
+
+                              Clipboard.setData(ClipboardData(text: 'ABillS lite\n'
+                                  'Версія додатку: ${data['appVersion']}\n'
+                                  'Версія білінгу: ${version['version']}\n'
+                                  'Версія API: ${version['apiVersion']}'));
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Докладнішу інформацію скопійовано')));
+
+                              setState(() {
+                                _loading = false;
+                              });
+                            },
+                            icon: Icon(Icons.copy),
+                            tooltip: 'Копіювати інформацію',
+                          ) : CircularProgressIndicator(),
                         );
                       } else {
                         return LinearProgressIndicator();

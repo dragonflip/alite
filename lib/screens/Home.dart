@@ -18,41 +18,59 @@ var futureData, lastUid;
 
 class _Home extends State<Home> {
   Future getData() async {
-    await getGlobals();
-    await checkSession();
+    try {
+      await getGlobals();
+      await checkSession();
 
-    lastUid = lastUid ?? uid;
+      lastUid = lastUid ?? uid;
 
-    var overallInfo = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {'USERSID': sid});
-    var personalInfo = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {'USERSID': sid});
+      var overallInfo = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {'USERSID': sid});
+      var personalInfo = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {'USERSID': sid});
 
-    var profile = jsonDecode(utf8.decode(personalInfo.bodyBytes));
-    profile.addAll(jsonDecode(utf8.decode(overallInfo.bodyBytes)));
+      var profile = jsonDecode(utf8.decode(personalInfo.bodyBytes));
+      profile.addAll(jsonDecode(utf8.decode(overallInfo.bodyBytes)));
 
-    var servicesResponse = await http.get(Uri.parse('$apiUrl/users/$uid/abon'), headers: {'KEY': 'testAPI_KEY12'}); // TODO change to user API
-    var servicesInfo = jsonDecode(utf8.decode(servicesResponse.bodyBytes));
+      var servicesResponse = await http.get(Uri.parse('$apiUrl/users/$uid/abon'), headers: {'KEY': 'testAPI_KEY12'}); // TODO change to user API
+      var servicesInfo = jsonDecode(utf8.decode(servicesResponse.bodyBytes));
 
-    var services = [];
+      print(servicesResponse.body);
 
-    for (int i = 0; i < servicesInfo.length; i++) {
-      if (servicesInfo[i]['activeService'] == '1') {
-        services.add(servicesInfo[i]);
+      var services = [];
+
+      for (int i = 0; i < servicesInfo.length; i++) {
+        if (servicesInfo[i]['activeService'] == '1') {
+          services.add(servicesInfo[i]);
+        }
       }
+
+      var internetResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet'), headers: {'USERSID': sid});
+      var internet = jsonDecode(utf8.decode(internetResponse.bodyBytes))[0]; // TODO multiple tariffs
+
+      var nextFeeResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet/${internet['id']}/warnings'), headers: {'USERSID': sid});
+      var nextFee = jsonDecode(utf8.decode(nextFeeResponse.bodyBytes));
+
+      print(nextFee);
+      print(internetResponse.body);
+
+      var prefs = await SharedPreferences.getInstance();
+      prefs.setString('tpId', internet['id']);
+
+      return {'profile': profile, 'services': services, 'internet': internet, 'nextFee': nextFee};
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Помилка'),
+          content: Text(e.toString()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('ОК'),
+            ),
+          ],
+        ),
+      );
     }
-
-    var internetResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet'), headers: {'USERSID': sid});
-    var internet = jsonDecode(utf8.decode(internetResponse.bodyBytes))[0]; // TODO multiple tariffs
-
-    var nextFeeResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet/${internet['id']}/warnings'), headers: {'USERSID': sid});
-    var nextFee = jsonDecode(utf8.decode(nextFeeResponse.bodyBytes));
-
-    print(nextFee);
-    print(internetResponse.body);
-
-    var prefs = await SharedPreferences.getInstance();
-    prefs.setString('tpId', internet['id']);
-
-    return {'profile': profile, 'services': services, 'internet': internet, 'nextFee': nextFee};
   }
 
   Future checkData() async {

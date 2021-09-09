@@ -16,12 +16,28 @@ class _Support extends State<Support> {
   var futureData;
 
   Future getData() async {
-    await getGlobals();
-    await checkSession();
+    try {
+      await getGlobals();
+      await checkSession();
 
-    var dialogs = await http.post(Uri.parse('$apiUrl/msgs/list'), body: jsonEncode({'uid': uid}), headers: {'KEY': 'testAPI_KEY12'});
+      var dialogs = await http.post(Uri.parse('$apiUrl/msgs/list'), body: jsonEncode({'uid': uid}), headers: {'KEY': 'testAPI_KEY12'});
 
-    return jsonDecode(utf8.decode(dialogs.bodyBytes));
+      return jsonDecode(utf8.decode(dialogs.bodyBytes));
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Помилка'),
+          content: Text(e.toString()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('ОК'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
