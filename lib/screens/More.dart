@@ -128,7 +128,7 @@ class _More extends State<More> {
 
                               await checkSession();
 
-                              var versionResponse = await http.get(Uri.parse('$apiUrl/version'), headers: {'KEY': 'testAPI_KEY12'});
+                              var versionResponse = await http.get(Uri.parse('$apiUrl/version'), headers: {'USERSID': sid});
                               var version = jsonDecode(utf8.decode(versionResponse.bodyBytes));
 
                               Clipboard.setData(ClipboardData(text: 'ABillS lite\n'
