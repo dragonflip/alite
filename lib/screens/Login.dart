@@ -36,9 +36,7 @@ class _Login extends State<Login> {
           headers: {'Content-Type' : 'application/json'}
         ).timeout(Duration(seconds: 5));
 
-        print(_login);
-        print(_password);
-        print(response.body);
+        print('loginResponse:\n${response.body}');
 
         if (jsonDecode(response.body)['uid'] != 0) {
           final prefs = await SharedPreferences.getInstance();

@@ -16,6 +16,8 @@ class Tariffs extends StatefulWidget {
 var futureData, lastUid;
 
 class _Tariffs extends State<Tariffs> {
+  var debugInfo = '';
+
   Future getData() async {
     try {
       await getGlobals();
@@ -23,14 +25,17 @@ class _Tariffs extends State<Tariffs> {
 
       lastUid = lastUid ?? uid;
 
-      var internetInfo = await http.get(Uri.parse('$apiUrl/user/$uid/internet'), headers: {'USERSID': sid});
-      var internet = jsonDecode(utf8.decode(internetInfo.bodyBytes))[0];
+      var internetResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet'), headers: {'USERSID': sid});
+      var internet = jsonDecode(utf8.decode(internetResponse.bodyBytes))[0];
+      debugInfo += '\ninternetResponse:\n${internetResponse.body}';
+
       internet['name'] = internet['tpName'];
 
-      var tariffsInfo = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/tariffs'), headers: {'USERSID': sid});
-      var tariffs = jsonDecode(utf8.decode(tariffsInfo.bodyBytes));
+      var tariffsResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/tariffs'), headers: {'USERSID': sid});
+      var tariffs = jsonDecode(utf8.decode(tariffsResponse.bodyBytes));
+      debugInfo += '\ntariffsResponse:\n${tariffsResponse.body}';
 
-      print(tariffs);
+      print(debugInfo);
 
       // Not allowed to change tariff
       if (tariffs is Map && tariffs.containsKey('error')) {
@@ -41,11 +46,13 @@ class _Tariffs extends State<Tariffs> {
         return tariffs;
       }
     } catch (e) {
+      print(debugInfo);
+
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
           title: Text('Помилка'),
-          content: Text(e.toString()),
+          content: Text(e.toString() + debugInfo),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -114,7 +121,7 @@ class _Tariffs extends State<Tariffs> {
                           title: Text('${futureData[index]['monthFee']} грн', style: TextStyle(fontSize: 18)),
                           subtitle: Text('Ціна'),
                           leading: Icon(Icons.attach_money),
-                          trailing: futureData[index]['id'] != tpId ? ElevatedButton(
+                          trailing: futureData[index]['id'].toString() != tpId ? ElevatedButton(
                             onPressed: () async {
                               var changeType = 0;
                               var newTariffId = futureData[index]['id'];

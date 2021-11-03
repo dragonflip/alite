@@ -16,6 +16,8 @@ class Profile extends StatefulWidget {
 var futureData, lastUid;
 
 class _Profile extends State<Profile> {
+  var debugInfo = '';
+
   Future getData() async {
     try {
       await getGlobals();
@@ -25,20 +27,23 @@ class _Profile extends State<Profile> {
 
       var profileResponse = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {'USERSID': sid});
       var profile = jsonDecode(utf8.decode(profileResponse.bodyBytes));
-
-      print(profileResponse.body);
+      debugInfo += '\nprofileResponse:\n${profileResponse.body}';
 
       profile['phone'] = profile['phone'].isNotEmpty ? profile['phone'][0].trim() : 'Не вказано';
       profile['email'] = profile['email'].isNotEmpty ? profile['email'][0].trim() : 'Не вказано';
       profile['addressFull'] = profile.containsKey('addressFull') ? profile['addressFull'].trim() : 'Не вказано';
 
+      print(debugInfo);
+
       return profile;
     } catch (e) {
+      print(debugInfo);
+
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
           title: Text('Помилка'),
-          content: Text(e.toString()),
+          content: Text(e.toString() + debugInfo),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

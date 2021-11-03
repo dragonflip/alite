@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:developer';
 
 import '../global.dart';
 
@@ -20,25 +21,26 @@ class _Pay extends State<Pay> {
   final _controller = TextEditingController();
   var _amount;
 
+  var debugInfo = '';
+
   Future getData() async {
     try {
       await getGlobals();
       await checkSession();
 
-      var overallResponse = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {'USERSID': sid});
-      var overallInfo = jsonDecode(utf8.decode(overallResponse.bodyBytes));
-      overallInfo['deposit'] = double.parse(overallInfo['deposit']);
-      overallInfo['credit'] = double.parse(overallInfo['credit']);
+      var overallInfoResponse = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {'USERSID': sid});
+      var overallInfo = jsonDecode(utf8.decode(overallInfoResponse.bodyBytes));
+      debugInfo += '\noverallInfoResponse:\n${overallInfoResponse.body}';
 
       var serviceCostResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet/$tpId/warnings'), headers: {'USERSID': sid});
       var serviceCost = jsonDecode(utf8.decode(serviceCostResponse.bodyBytes));
+      debugInfo += '\nserviceCostResponse:\n${serviceCostResponse.body}';
 
       var creditInfoResponse = await http.get(Uri.parse('$apiUrl/user/$uid/credit'), headers: {'USERSID': sid});
       var creditInfo = jsonDecode(utf8.decode(creditInfoResponse.bodyBytes));
+      debugInfo += '\ncreditInfoResponse:\n${creditInfoResponse.body}';
 
-      print(creditInfo);
-
-      // TODO remove when API send sum even error
+      // TODO remove when API send sum even when error
       if (serviceCost.containsKey('sum')) {
         if (overallInfo['deposit'] >= serviceCost['sum']) {
           _amount = serviceCost['sum'].toStringAsFixed(2);
@@ -51,12 +53,15 @@ class _Pay extends State<Pay> {
       }
 
       return {'overallInfo': overallInfo, 'creditInfo': creditInfo, 'serviceCost': serviceCost};
-    } catch (e) {
+    } catch (e, stacktrace) {
+      log(e.toString());
+      log(stacktrace.toString());
+
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
           title: Text('Помилка'),
-          content: Text(e.toString()),
+          content: Text(e.toString() + '\n' + stacktrace.toString()),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

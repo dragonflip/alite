@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'dart:developer';
 
 import '../global.dart';
 
@@ -17,6 +18,8 @@ class Home extends StatefulWidget {
 var futureData, lastUid;
 
 class _Home extends State<Home> {
+  var debugInfo = '';
+
   Future getData() async {
     try {
       await getGlobals();
@@ -24,44 +27,62 @@ class _Home extends State<Home> {
 
       lastUid = lastUid ?? uid;
 
-      var overallInfo = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {'USERSID': sid});
-      var personalInfo = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {'USERSID': sid});
+      var overallInfoResponse = await http.get(Uri.parse('$apiUrl/user/$uid'), headers: {'USERSID': sid});
+      var overallInfo = jsonDecode(utf8.decode(overallInfoResponse.bodyBytes));
+      debugInfo += '\noverallInfo:\n$overallInfo\n';
 
-      var profile = jsonDecode(utf8.decode(personalInfo.bodyBytes));
-      profile.addAll(jsonDecode(utf8.decode(overallInfo.bodyBytes)));
+      var personalInfoResponse = await http.get(Uri.parse('$apiUrl/user/$uid/pi'), headers: {'USERSID': sid});
+      var personalInfo = jsonDecode(utf8.decode(personalInfoResponse.bodyBytes));
+      debugInfo += '\npersonalInfo:\n$personalInfo\n';
 
-      var servicesResponse = await http.get(Uri.parse('$apiUrl/users/$uid/abon'), headers: {'KEY': 'testAPI_KEY12'}); // TODO change to user API
-      var servicesInfo = jsonDecode(utf8.decode(servicesResponse.bodyBytes));
+      overallInfo.addAll(personalInfo);
 
-      print(servicesResponse.body);
+      var servicesResponse = await http.get(Uri.parse('$apiUrl/user/$uid/abon'), headers: {'USERSID': sid});
+      var services = jsonDecode(utf8.decode(servicesResponse.bodyBytes));
+      debugInfo += '\nservices:\n$services\n';
 
-      var services = [];
+      var activeServices = [];
 
-      for (int i = 0; i < servicesInfo.length; i++) {
-        if (servicesInfo[i]['activeService'] == '1') {
-          services.add(servicesInfo[i]);
+      for (int i = 0; i < services.length; i++) {
+        if (services[i] != null && services[i].containsKey('activeService') && services[i]['activeService'] == '1') {
+          activeServices.add(services[i]);
         }
       }
 
       var internetResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet'), headers: {'USERSID': sid});
       var internet = jsonDecode(utf8.decode(internetResponse.bodyBytes))[0]; // TODO multiple tariffs
+      debugInfo += '\ninternet:\n$internet\n';
 
       var nextFeeResponse = await http.get(Uri.parse('$apiUrl/user/$uid/internet/${internet['id']}/warnings'), headers: {'USERSID': sid});
       var nextFee = jsonDecode(utf8.decode(nextFeeResponse.bodyBytes));
-
-      print(nextFee);
-      print(internetResponse.body);
+      debugInfo += '\nnextFee:\n$nextFee\n';
 
       var prefs = await SharedPreferences.getInstance();
-      prefs.setString('tpId', internet['id']);
+      prefs.setString('tpId', internet['id'].toString());
 
-      return {'profile': profile, 'services': services, 'internet': internet, 'nextFee': nextFee};
-    } catch (e) {
+      log(debugInfo);
+
+      return {'profile': overallInfo, 'services': activeServices, 'internet': internet, 'nextFee': nextFee};
+    } catch (e, stacktrace) {
+      log(debugInfo);
+      log(e.toString());
+      log(stacktrace.toString());
+
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
           title: Text('Помилка'),
-          content: Text(e.toString()),
+          insetPadding: EdgeInsets.all(0),
+          contentPadding: EdgeInsets.fromLTRB(24, 16, 24, 0),
+          content: SizedBox.expand(
+            child: Scrollbar(
+              isAlwaysShown: true,
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                child: Text(e.toString() + stacktrace.toString() + '\n\n' + debugInfo),
+              ),
+            ),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -98,13 +119,13 @@ class _Home extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/support');
-        },
-        child: Icon(Icons.chat),
-        tooltip: 'Чат з тех. підтримкою',
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.pushNamed(context, '/support');
+      //   },
+      //   child: Icon(Icons.chat),
+      //   tooltip: 'Чат з тех. підтримкою',
+      // ),
       body: Container(
         child: futureData != null ? RefreshIndicator(
           onRefresh: () {
@@ -149,8 +170,8 @@ class _Home extends State<Home> {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Text(double.parse(futureData['profile']['deposit']).toStringAsFixed(2), style: TextStyle(fontSize: 32, color: double.parse(futureData['profile']['deposit']) > 0 ? Colors.green : Colors.red)),
-                                    Text(' грн', style: TextStyle(fontSize: 18, color: double.parse(futureData['profile']['deposit']) > 0 ? Colors.green : Colors.red)),
+                                    Text(futureData['profile']['deposit'].toStringAsFixed(2), style: TextStyle(fontSize: 32, color: futureData['profile']['deposit'] > 0 ? Colors.green : Colors.red)),
+                                    Text(' грн', style: TextStyle(fontSize: 18, color: futureData['profile']['deposit'] > 0 ? Colors.green : Colors.red)),
                                   ],
                                 ),
                                 SizedBox(height: 8),
@@ -227,7 +248,7 @@ class _Home extends State<Home> {
                     ),
                   ),
                 ),
-                for (var item in futureData['services']) Card(
+                if (futureData['services'].isNotEmpty) for (var item in futureData['services']) Card(
                   margin: EdgeInsets.fromLTRB(8, 4, 8, 4),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
